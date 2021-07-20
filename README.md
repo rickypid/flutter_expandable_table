@@ -18,13 +18,13 @@
 &nbsp;
 
 ## Usage
-Make sure to check out the [examples on GitHub](https://github.com/rickypid/flutter_expandable_table/tree/master/exmple).
+Make sure to check out the [examples on GitHub](https://github.com/rickypid/flutter_expandable_table/tree/master/example).
 
 ### Installation
 Add the following line to `pubspec.yaml`:
 ```yaml
 dependencies:
-  flutter_expandable_table: ^0.0.1-alpha
+  flutter_expandable_table: <last-release>
 ```
 
 ### Basic setup

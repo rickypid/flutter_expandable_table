@@ -1,7 +1,11 @@
 #### flutter_expandable_table
 # Expandable Table
+[![Pub Package](https://img.shields.io/pub/v/flutter_expandable_table.svg?style=flat-square)](https://pub.dartlang.org/packages/flutter_expandable_table)
+[![likes](https://badges.bar/flutter_expandable_table/likes)](https://pub.dev/packages/flutter_expandable_table/score)
+[![popularity](https://badges.bar/flutter_expandable_table/popularity)](https://pub.dev/packages/flutter_expandable_table/score)
+[![pub points](https://badges.bar/flutter_expandable_table/pub%20points)](https://pub.dev/packages/flutter_expandable_table/score)
 
-[![Pub Package](https://img.shields.io/pub/v/flutter_expandable_table.svg?style=flat-square)](https://pub.dartlang.org/packages/flutter_expandable_table) [![Package Issue](https://img.shields.io/github/issues/rickypid/flutter_expandable_table)](https://github.com/rickypid/flutter_expandable_table/issues)
+ [![Package Issue](https://img.shields.io/github/issues/rickypid/flutter_expandable_table)](https://github.com/rickypid/flutter_expandable_table/issues)
 ![Package License](https://img.shields.io/github/license/rickypid/flutter_expandable_table)
 
 `ExpandableTable` is a widget for Flutter that create a Table with header and first column fixed. You can create a nested Rows/Columns grouped in expandable Row/Column

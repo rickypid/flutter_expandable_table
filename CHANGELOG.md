@@ -1,5 +1,9 @@
 # Flutter Expandable Table
 
+## [1.0.1] - 2022-01-25
+#### [@rickypid](https://github.com/rickypid)
+- Improved documentations.
+
 ## [1.0.0] - 2021-07-23
 #### [@rickypid](https://github.com/rickypid)
 - Stable release.

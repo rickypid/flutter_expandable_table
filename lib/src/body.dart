@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'cell.dart';
@@ -48,9 +47,7 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
       firstColumn.add(
         ExpandableTableCell(
           child: row.firstCell,
-          height: row.height != null
-              ? row.height
-              : ExpandableTableData.of(context).cellHeight,
+          height: row.height,
           width: ExpandableTableData.of(context).firstColumnWidth,
           verticalExpanded: rowParent != null ? rowParent.isExpanded : true,
           onTap: () {
@@ -65,9 +62,7 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
       firstColumn.add(
         ExpandableTableCell(
           child: row.firstCell,
-          height: row.height != null
-              ? row.height
-              : ExpandableTableData.of(context).cellHeight,
+          height: row.height,
           width: ExpandableTableData.of(context).firstColumnWidth,
           verticalExpanded: rowParent == null || rowParent.isExpanded,
           onTap: () {
@@ -99,9 +94,7 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
       for (Widget cell in cells) {
         cellsRow.add(ExpandableTableCell(
           child: cell,
-          height: row.height != null
-              ? row.height
-              : ExpandableTableData.of(context).cellHeight,
+          height: row.height,
           width: ExpandableTableData.of(context).cellWidth,
           horizontalExpanded:
               ExpandableTableData.of(context).visibleColumn[x] == true,
@@ -122,9 +115,7 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
           Expanded(
             child: ExpandableTableCell(
                 verticalExpanded: rowParent == null || rowParent.isExpanded,
-                height: row.height != null
-                    ? row.height
-                    : ExpandableTableData.of(context).cellHeight,
+                height: row.height,
                 width: ExpandableTableData.of(context).cellWidth,
                 child: row.legend),
           )

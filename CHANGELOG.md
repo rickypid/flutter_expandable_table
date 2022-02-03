@@ -1,5 +1,9 @@
 # Flutter Expandable Table
 
+## [1.0.2] - 2022-02-03
+#### [@rickypid](https://github.com/rickypid)
+- Remove unnecessary imports and unnecessary null check, upgraded dependency.
+
 ## [1.0.1] - 2022-01-25
 #### [@rickypid](https://github.com/rickypid)
 - Improved documentations.

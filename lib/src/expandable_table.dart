@@ -2,7 +2,6 @@
 library flutter_expandable_table;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'body.dart';

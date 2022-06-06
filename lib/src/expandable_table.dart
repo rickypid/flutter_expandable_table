@@ -65,6 +65,11 @@ class ExpandableTable extends StatefulWidget {
   /// Default: [Colors.transparent]
   final Color scrollShadowColor;
 
+  /// [visibleScrollbar] determines visibility of scroolbar.
+  ///
+  /// Default: [false]
+  final bool visibleScrollbar;
+
   /// [ExpandableTable] constructor.
   /// Required:
   ///   - rows
@@ -82,6 +87,7 @@ class ExpandableTable extends StatefulWidget {
     this.scrollShadowDuration = const Duration(milliseconds: 500),
     this.scrollShadowCurve = Curves.fastOutSlowIn,
     this.scrollShadowColor = Colors.transparent,
+    this.visibleScrollbar = false,
   }) : super(key: key);
 
   @override
@@ -101,6 +107,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
       scrollShadowColor: widget.scrollShadowColor,
       scrollShadowCurve: widget.scrollShadowCurve,
       scrollShadowDuration: widget.scrollShadowDuration,
+      visibleScrollbar: widget.visibleScrollbar,
       child: _Table(
         rows: widget.rows,
         header: widget.header,
@@ -215,12 +222,25 @@ class __TableState extends State<_Table> {
                     duration:
                         ExpandableTableData.of(context).scrollShadowDuration,
                     controller: _headController,
-                    child: ListView(
-                      controller: _headController,
-                      physics: ClampingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      children: _buildHeaderCells(context, widget.header, null),
-                    ),
+                    child: ExpandableTableData.of(context).visibleScrollbar
+                        ? Scrollbar(
+                            child: ListView(
+                              controller: _headController,
+                              physics: ClampingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              children: _buildHeaderCells(
+                                  context, widget.header, null),
+                            ),
+                            isAlwaysShown: true,
+                            controller: _headController,
+                          )
+                        : ListView(
+                            controller: _headController,
+                            physics: ClampingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            children:
+                                _buildHeaderCells(context, widget.header, null),
+                          ),
                   ),
                 ),
               ],
@@ -230,6 +250,8 @@ class __TableState extends State<_Table> {
             child: ExpandableTableBody(
               scrollController: _bodyController,
               rows: widget.rows,
+              visibleScrollbar:
+                  ExpandableTableData.of(context).visibleScrollbar,
             ),
           ),
         ],

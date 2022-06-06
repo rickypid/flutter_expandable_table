@@ -8,10 +8,12 @@ import 'data.dart';
 class ExpandableTableBody extends StatefulWidget {
   final ScrollController scrollController;
   final List<ExpandableTableRow> rows;
+  final bool visibleScrollbar;
 
   ExpandableTableBody({
     required this.scrollController,
     required this.rows,
+    required this.visibleScrollbar,
   });
 
   @override
@@ -149,11 +151,21 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
             curve: ExpandableTableData.of(context).scrollShadowCurve,
             duration: ExpandableTableData.of(context).scrollShadowDuration,
             controller: _firstColumnController,
-            child: ListView(
-              controller: _firstColumnController,
-              physics: ClampingScrollPhysics(),
-              children: firstColumn,
-            ),
+            child: ExpandableTableData.of(context).visibleScrollbar
+                ? Scrollbar(
+                    child: ListView(
+                      controller: _firstColumnController,
+                      physics: ClampingScrollPhysics(),
+                      children: firstColumn,
+                    ),
+                    isAlwaysShown: true,
+                    controller: _firstColumnController,
+                  )
+                : ListView(
+                    controller: _firstColumnController,
+                    physics: ClampingScrollPhysics(),
+                    children: firstColumn,
+                  ),
           ),
         ),
         Expanded(
@@ -181,11 +193,21 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
                   duration:
                       ExpandableTableData.of(context).scrollShadowDuration,
                   controller: _restColumnsController,
-                  child: ListView(
-                    controller: _restColumnsController,
-                    physics: const ClampingScrollPhysics(),
-                    children: bodyColumns,
-                  ),
+                  child: ExpandableTableData.of(context).visibleScrollbar
+                      ? ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: ListView(
+                            controller: _restColumnsController,
+                            physics: const ClampingScrollPhysics(),
+                            children: bodyColumns,
+                          ),
+                        )
+                      : ListView(
+                          controller: _restColumnsController,
+                          physics: const ClampingScrollPhysics(),
+                          children: bodyColumns,
+                        ),
                 ),
               ),
             ),

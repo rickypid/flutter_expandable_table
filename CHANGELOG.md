@@ -1,5 +1,9 @@
 # Flutter Expandable Table
 
+## [1.1.0] - 2022-06-07
+#### [@RichiB20](https://github.com/RichiB20)
+- implemented property `visibleScrollbar`.
+
 ## [1.0.2] - 2022-02-03
 #### [@rickypid](https://github.com/rickypid)
 - Remove unnecessary imports and unnecessary null check, upgraded dependency.

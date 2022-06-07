@@ -234,7 +234,7 @@ class __TableState extends State<_Table> {
                         return ExpandableTableData.of(context).visibleScrollbar
                             ? Scrollbar(
                                 child: child,
-                                isAlwaysShown: true,
+                                thumbVisibility: true,
                                 controller: _headController,
                               )
                             : child;

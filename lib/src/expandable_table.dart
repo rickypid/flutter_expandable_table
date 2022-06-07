@@ -65,7 +65,7 @@ class ExpandableTable extends StatefulWidget {
   /// Default: [Colors.transparent]
   final Color scrollShadowColor;
 
-  /// [visibleScrollbar] determines visibility of scroolbar.
+  /// [visibleScrollbar] determines visibility of scrollbar.
   ///
   /// Default: [false]
   final bool visibleScrollbar;

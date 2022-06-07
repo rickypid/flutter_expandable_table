@@ -151,21 +151,22 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
             curve: ExpandableTableData.of(context).scrollShadowCurve,
             duration: ExpandableTableData.of(context).scrollShadowDuration,
             controller: _firstColumnController,
-            child: ExpandableTableData.of(context).visibleScrollbar
-                ? Scrollbar(
-                    child: ListView(
-                      controller: _firstColumnController,
-                      physics: ClampingScrollPhysics(),
-                      children: firstColumn,
-                    ),
-                    isAlwaysShown: true,
-                    controller: _firstColumnController,
-                  )
-                : ListView(
-                    controller: _firstColumnController,
-                    physics: ClampingScrollPhysics(),
-                    children: firstColumn,
-                  ),
+            child: Builder(
+              builder: (context) {
+                Widget child = ListView(
+                  controller: _firstColumnController,
+                  physics: ClampingScrollPhysics(),
+                  children: firstColumn,
+                );
+                return ExpandableTableData.of(context).visibleScrollbar
+                    ? Scrollbar(
+                        child: child,
+                        isAlwaysShown: true,
+                        controller: _firstColumnController,
+                      )
+                    : child;
+              },
+            ),
           ),
         ),
         Expanded(
@@ -193,21 +194,22 @@ class _ExpandableTableBodyState extends State<ExpandableTableBody>
                   duration:
                       ExpandableTableData.of(context).scrollShadowDuration,
                   controller: _restColumnsController,
-                  child: ExpandableTableData.of(context).visibleScrollbar
-                      ? ScrollConfiguration(
-                          behavior: ScrollConfiguration.of(context)
-                              .copyWith(scrollbars: false),
-                          child: ListView(
-                            controller: _restColumnsController,
-                            physics: const ClampingScrollPhysics(),
-                            children: bodyColumns,
-                          ),
-                        )
-                      : ListView(
-                          controller: _restColumnsController,
-                          physics: const ClampingScrollPhysics(),
-                          children: bodyColumns,
-                        ),
+                  child: Builder(
+                    builder: (context) {
+                      Widget child = ListView(
+                        controller: _restColumnsController,
+                        physics: const ClampingScrollPhysics(),
+                        children: bodyColumns,
+                      );
+                      return ExpandableTableData.of(context).visibleScrollbar
+                          ? ScrollConfiguration(
+                              behavior: ScrollConfiguration.of(context)
+                                  .copyWith(scrollbars: false),
+                              child: child,
+                            )
+                          : child;
+                    },
+                  ),
                 ),
               ),
             ),

@@ -54,6 +54,7 @@ ExpandableTable(
 * `scrollShadowDuration`: determines duration rendered animation of shadows.
 * `scrollShadowCurve`: determines rendered curve animation of shadows.
 * `scrollShadowColor`: determines rendered color of shadows.
+* `visibleScrollbar`: determines visibility of scroolbar.
 
 &nbsp;
 

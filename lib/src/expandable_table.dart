@@ -222,25 +222,24 @@ class __TableState extends State<_Table> {
                     duration:
                         ExpandableTableData.of(context).scrollShadowDuration,
                     controller: _headController,
-                    child: ExpandableTableData.of(context).visibleScrollbar
-                        ? Scrollbar(
-                            child: ListView(
-                              controller: _headController,
-                              physics: ClampingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              children: _buildHeaderCells(
-                                  context, widget.header, null),
-                            ),
-                            isAlwaysShown: true,
-                            controller: _headController,
-                          )
-                        : ListView(
-                            controller: _headController,
-                            physics: ClampingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            children:
-                                _buildHeaderCells(context, widget.header, null),
-                          ),
+                    child: Builder(
+                      builder: (context) {
+                        Widget child = ListView(
+                          controller: _headController,
+                          physics: ClampingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          children:
+                              _buildHeaderCells(context, widget.header, null),
+                        );
+                        return ExpandableTableData.of(context).visibleScrollbar
+                            ? Scrollbar(
+                                child: child,
+                                isAlwaysShown: true,
+                                controller: _headController,
+                              )
+                            : child;
+                      },
+                    ),
                   ),
                 ),
               ],

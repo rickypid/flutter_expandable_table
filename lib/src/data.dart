@@ -27,6 +27,7 @@ class ExpandableTableData extends StatefulWidget {
   final Duration scrollShadowDuration;
   final Curve scrollShadowCurve;
   final Color scrollShadowColor;
+  final bool visibleScrollbar;
 
   ExpandableTableData({
     required this.child,
@@ -39,6 +40,7 @@ class ExpandableTableData extends StatefulWidget {
     required this.scrollShadowDuration,
     required this.scrollShadowCurve,
     required this.scrollShadowColor,
+    required this.visibleScrollbar,
   });
 
   static ExpandableTableDataState of(BuildContext context) {
@@ -61,6 +63,8 @@ class ExpandableTableDataState extends State<ExpandableTableData> {
   Curve get scrollShadowCurve => widget.scrollShadowCurve;
 
   Color get scrollShadowColor => widget.scrollShadowColor;
+
+  bool get visibleScrollbar => widget.visibleScrollbar;
 
   double get cellWidth => widget.cellWidth;
 

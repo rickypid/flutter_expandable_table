@@ -1,5 +1,9 @@
 # Flutter Expandable Table
 
+## [1.1.1] - 2022-06-07
+#### [@allato](https://github.com/allato)
+- Format code.
+
 ## [1.1.0] - 2022-06-07
 #### [@RichiB20](https://github.com/RichiB20)
 - implemented property `visibleScrollbar`.

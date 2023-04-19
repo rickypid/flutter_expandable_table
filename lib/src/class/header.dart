@@ -1,19 +1,40 @@
-import 'package:flutter_expandable_table/src/class/header_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
-class ExpandableTableHeader extends ExpandableTableHeaderCore {
-  @override
-  bool get isExpanded => super.isExpanded && parent?.isExpanded == true;
+class ExpandableTableHeader extends ChangeNotifier {
   final List<ExpandableTableHeader>? children;
+  late bool _childrenExpanded;
 
-  @override
-  bool get visible => !isExpanded || !hideWhenExpanded;
+  bool get childrenExpanded => _childrenExpanded;
+
+  bool get visible =>
+      (!childrenExpanded || !hideWhenExpanded) &&
+      (parent == null || parent?.childrenExpanded == true);
+  ExpandableTableHeader? parent;
+
+  set childrenExpanded(bool value) {
+    _childrenExpanded = value;
+    if (children != null && !_childrenExpanded) {
+      for (var child in children!) {
+        child.childrenExpanded = false;
+      }
+    }
+    notifyListeners();
+  }
+
+  toggleExpand() => childrenExpanded = !childrenExpanded;
+
+  final ExpandableTableCell cell;
+  final double? width;
+  final bool hideWhenExpanded;
   ExpandableTableHeader({
-    required super.cell,
+    required this.cell,
     this.children,
-    super.hideWhenExpanded = true,
-    super.width,
-    super.isExpanded = false,
+    this.hideWhenExpanded = false,
+    this.width,
+    bool childrenExpanded = false,
   }) {
+    _childrenExpanded = childrenExpanded;
     if (children != null) {
       for (var child in children!) {
         child.parent = this;
@@ -32,7 +53,7 @@ class ExpandableTableHeader extends ExpandableTableHeaderCore {
   }
 
   int get visibleColumnsCount {
-    int count = isExpanded && hideWhenExpanded ? 0 : 1;
+    int count = childrenExpanded && hideWhenExpanded ? 0 : 1;
     if (children != null) {
       for (var e in children!) {
         count += e.visibleColumnsCount;

@@ -109,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ExpandableTable _buildExpandableTable() {
     const int columnsCount = 20;
-    const int subColumnsCount = 5;
+    const int subColumnsCount = 2;
     const int rowsCount = 6;
 
     //Creation header
@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-          children: index == 6 ? subHeader : null),
+          children: index == 19 ? subHeader : null),
     );
 
     //Creation sub rows
@@ -190,14 +190,21 @@ class _MyHomePageState extends State<MyHomePage> {
       (rowIndex) => ExpandableTableRow(
         height: 30,
         firstCell: ExpandableTableCell(
-          child: Container(
+          builder: (context, details) => Container(
             color: primaryColor,
             margin: const EdgeInsets.all(1),
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0),
-              child: Text(
-                'Sub Row $rowIndex',
-                style: textStyleSubItems,
+              child: Row(
+                children: [
+                  Icon(details.verticalChildrenExpanded
+                      ? Icons.keyboard_arrow_right
+                      : Icons.keyboard_arrow_down),
+                  Text(
+                    'Sub Row $rowIndex',
+                    style: textStyleSubItems,
+                  ),
+                ],
               ),
             ),
           ),

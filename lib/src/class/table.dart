@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
-import 'package:flutter_expandable_table/src/class/cell_data.dart';
-import 'package:flutter_expandable_table/src/class/header_core.dart';
-import 'package:flutter_expandable_table/src/class/row_core.dart';
 
 class ExpandableTableData extends ChangeNotifier {
   late double _headerHeight;
@@ -83,18 +80,18 @@ class ExpandableTableData extends ChangeNotifier {
     _defaultsRowHeight = defaultsRowHeight;
   }
 
-  List<ExpandableTableHeaderCore> get allHeaders => _getAllHeaders(headers);
+  List<ExpandableTableHeader> get allHeaders => _getAllHeaders(headers);
 
-  List<ExpandableTableHeaderCore> get visibleHeaders =>
+  List<ExpandableTableHeader> get visibleHeaders =>
       allHeaders.where((element) => element.visible).toList();
 
   double get visibleHeadersWidth => visibleHeaders
       .map<double>((e) => e.width ?? defaultsColumnWidth)
       .fold(0, (a, b) => a + b);
 
-  List<ExpandableTableHeaderCore> _getAllHeaders(
+  List<ExpandableTableHeader> _getAllHeaders(
       List<ExpandableTableHeader> headers) {
-    List<ExpandableTableHeaderCore> cells = [];
+    List<ExpandableTableHeader> cells = [];
     for (var header in headers) {
       cells.add(header);
       if (header.children != null) {
@@ -104,23 +101,23 @@ class ExpandableTableData extends ChangeNotifier {
     return cells;
   }
 
-  List<ExpandableTableRowCore> get allRows => _getAllRows(rows);
+  List<ExpandableTableRow> get allRows => _getAllRows(rows);
 
-  List<ExpandableTableRowCore> get visibleRows =>
+  List<ExpandableTableRow> get visibleRows =>
       allRows.where((element) => element.visible).toList();
 
   double get visibleRowsHeight => visibleRows
       .map<double>((e) => e.height ?? defaultsRowHeight)
       .fold(0, (a, b) => a + b);
 
-  List<ExpandableTableRowCore> _getAllRows(List<ExpandableTableRow> rows) {
-    List<ExpandableTableRowCore> rowsTmp = [];
+  List<ExpandableTableRow> _getAllRows(List<ExpandableTableRow> rows) {
+    List<ExpandableTableRow> rowsTmp = [];
     for (var row in rows) {
       rowsTmp.add(row);
       if (row.children != null) {
         rowsTmp.addAll(_getAllRows(row.children!));
       }
     }
-    return rows;
+    return rowsTmp;
   }
 }

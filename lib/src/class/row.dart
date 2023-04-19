@@ -1,21 +1,44 @@
-import 'package:flutter_expandable_table/src/class/row_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
-class ExpandableTableRow extends ExpandableTableRowCore {
+class ExpandableTableRow extends ChangeNotifier {
   final List<ExpandableTableRow>? children;
+  final ExpandableTableCell firstCell;
+  final List<ExpandableTableCell> cells;
+  final double? height;
+  final bool hideWhenExpanded;
 
+  late bool _childrenExpanded;
 
-  @override
-  bool get isExpanded => super.isExpanded && parent?.isExpanded == true;
-  @override
-  bool get visible => !isExpanded || !hideWhenExpanded;
+  bool get childrenExpanded => _childrenExpanded;
+
+  bool get visible =>
+      (!childrenExpanded || !hideWhenExpanded) &&
+      (parent == null || parent?.childrenExpanded == true);
+
+  set childrenExpanded(bool value) {
+    _childrenExpanded = value;
+    if (children != null && !_childrenExpanded) {
+      for (var child in children!) {
+        child.childrenExpanded = false;
+      }
+    }
+    notifyListeners();
+  }
+
+  toggleExpand() => childrenExpanded = !childrenExpanded;
+
+  ExpandableTableRow? parent;
+
   ExpandableTableRow({
-    required super.firstCell,
-    required super.cells,
+    required this.firstCell,
+    required this.cells,
     this.children,
-    super.height,
-    super.hideWhenExpanded = false,
-    super.isExpanded = false,
-  }) : super() {
+    this.height,
+    this.hideWhenExpanded = false,
+    bool childrenExpanded = false,
+  }) {
+    _childrenExpanded = childrenExpanded;
     if (children != null) {
       for (var child in children!) {
         child.parent = this;
@@ -34,7 +57,7 @@ class ExpandableTableRow extends ExpandableTableRowCore {
   }
 
   int get visibleRowsCount {
-    int count = isExpanded && hideWhenExpanded ? 0 : 1;
+    int count = childrenExpanded && hideWhenExpanded ? 0 : 1;
     if (children != null) {
       for (var e in children!) {
         count += e.visibleRowsCount;
@@ -42,4 +65,6 @@ class ExpandableTableRow extends ExpandableTableRowCore {
     }
     return count;
   }
+
+  int get cellsCount => cells.length;
 }

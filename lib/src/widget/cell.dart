@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_table/src/class/cell_details.dart';
 import 'package:flutter_expandable_table/src/class/table.dart';
 import 'package:provider/provider.dart';
 
 class ExpandableTableCellWidget extends StatelessWidget {
-  final Widget? child;
+  final Function(BuildContext context, CellDetails details) builder;
   final double height;
   final double width;
   final VoidCallback? onTap;
@@ -15,7 +16,7 @@ class ExpandableTableCellWidget extends StatelessWidget {
 
   const ExpandableTableCellWidget({
     super.key,
-    this.child,
+    required this.builder,
     required this.height,
     required this.width,
     this.onTap,
@@ -30,11 +31,18 @@ class ExpandableTableCellWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-          duration: context.watch<ExpandableTableData>().duration,
-          curve: context.watch<ExpandableTableData>().curve,
-          width: horizontalExpanded == true ? width : 0,
-          height: verticalExpanded == true ? height : 0,
-          child: child),
+        duration: context.watch<ExpandableTableData>().duration,
+        curve: context.watch<ExpandableTableData>().curve,
+        width: horizontalExpanded == true ? width : 0,
+        height: verticalExpanded == true ? height : 0,
+        child: builder(
+          context,
+          CellDetails(
+            verticalChildrenExpanded: verticalExpanded,
+            horizontalChildrenExpanded: horizontalExpanded,
+          ),
+        ),
+      ),
     );
   }
 }

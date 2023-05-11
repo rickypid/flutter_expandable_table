@@ -10,7 +10,8 @@ class ExpandableTableRow extends ChangeNotifier {
 
   late bool _childrenExpanded;
 
-  bool get childrenExpanded => children?.isNotEmpty == true && _childrenExpanded;
+  bool get childrenExpanded =>
+      children?.isNotEmpty == true && _childrenExpanded;
 
   bool get visible =>
       (!childrenExpanded || !hideWhenExpanded) &&
@@ -25,8 +26,6 @@ class ExpandableTableRow extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-  toggleExpand() => childrenExpanded = !childrenExpanded;
 
   ExpandableTableRow? _parent;
   ExpandableTableRow? get parent => _parent;
@@ -82,4 +81,6 @@ class ExpandableTableRow extends ChangeNotifier {
   int get cellsCount => cells.length;
 
   List<int> get address => (parent?.address ?? [])..add(index ?? 0);
+
+  toggleExpand() => childrenExpanded = !childrenExpanded;
 }

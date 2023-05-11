@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
 class ExpandableTableHeader extends ChangeNotifier {
+  final ExpandableTableCell cell;
+  final double? width;
+  final bool hideWhenExpanded;
   final List<ExpandableTableHeader>? children;
+
   late bool _childrenExpanded;
 
   bool get childrenExpanded =>
@@ -21,9 +25,6 @@ class ExpandableTableHeader extends ChangeNotifier {
   ExpandableTableHeader? _parent;
   ExpandableTableHeader? get parent => _parent;
   int? index;
-  final ExpandableTableCell cell;
-  final double? width;
-  final bool hideWhenExpanded;
 
   ExpandableTableHeader({
     required this.cell,
@@ -76,7 +77,7 @@ class ExpandableTableHeader extends ChangeNotifier {
       (!childrenExpanded || !hideWhenExpanded) &&
       (parent == null || parent?.childrenExpanded == true);
 
-  toggleExpand() => childrenExpanded = !childrenExpanded;
-
   List<int> get address => (parent?.address ?? [])..add(index ?? -1);
+
+  toggleExpand() => childrenExpanded = !childrenExpanded;
 }

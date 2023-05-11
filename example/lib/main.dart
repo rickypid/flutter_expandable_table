@@ -32,10 +32,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
-
-
   ExpandableTable _buildSimpleTable() {
     const int columnsCount = 20;
     const int rowsCount = 20;
@@ -202,9 +199,12 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.only(left: 16.0),
               child: Row(
                 children: [
-                  Icon(details.row?.childrenExpanded == true
-                      ? Icons.keyboard_arrow_down
-                      : Icons.keyboard_arrow_right, color: Colors.white,),
+                  Icon(
+                    details.row?.childrenExpanded == true
+                        ? Icons.keyboard_arrow_down
+                        : Icons.keyboard_arrow_right,
+                    color: Colors.white,
+                  ),
                   Text(
                     'Sub Row $rowIndex',
                     style: textStyleSubItems,
@@ -222,11 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: primaryColor,
               margin: const EdgeInsets.all(1),
               child: GestureDetector(
-                onTap: () {
-                  print(details.row?.address);
-                  print(details.header?.address);
-                  details.rowParent?.toggleExpand();
-                  },
+                onTap: details.rowParent?.toggleExpand,
                 child: Center(
                   child: Text(
                     'Cell $rowIndex:$columnIndex',
@@ -331,8 +327,8 @@ class _MyHomePageState extends State<MyHomePage> {
 class AppCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.trackpad,
-  };
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
 }

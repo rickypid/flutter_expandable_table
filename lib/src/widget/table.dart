@@ -232,12 +232,19 @@ class __TableState extends State<_Table> {
                       .map(
                         (e) => ChangeNotifierProvider<ExpandableTableRow>.value(
                           value: e,
-                          builder: (context, child) =>  ExpandableTableCellWidget(
+                          builder: (context, child) =>
+                              ExpandableTableCellWidget(
                             row: context.watch<ExpandableTableRow>(),
-                            height: context.watch<ExpandableTableRow>().height ?? data.defaultsRowHeight,
+                            height:
+                                context.watch<ExpandableTableRow>().height ??
+                                    data.defaultsRowHeight,
                             width: data.firstColumnWidth,
-                            rowParent: context.watch<ExpandableTableRow>().parent,
-                            builder: context.watch<ExpandableTableRow>().firstCell.build,
+                            rowParent:
+                                context.watch<ExpandableTableRow>().parent,
+                            builder: context
+                                .watch<ExpandableTableRow>()
+                                .firstCell
+                                .build,
                             onTap: () {
                               e.toggleExpand();
                               debugPrint(

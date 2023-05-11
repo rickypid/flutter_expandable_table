@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
 class ExpandableTableData extends ChangeNotifier {
+  final ExpandableTableCell firstHeaderCell;
+
   late double _headerHeight;
 
   double get headerHeight => _headerHeight;
@@ -61,6 +63,7 @@ class ExpandableTableData extends ChangeNotifier {
   final List<ExpandableTableRow> rows;
 
   ExpandableTableData({
+    required this.firstHeaderCell,
     required this.headers,
     required this.rows,
     this.duration = const Duration(milliseconds: 500),
@@ -78,7 +81,27 @@ class ExpandableTableData extends ChangeNotifier {
     _firstColumnWidth = firstColumnWidth;
     _defaultsColumnWidth = defaultsColumnWidth;
     _defaultsRowHeight = defaultsRowHeight;
+    for (var header in headers) {
+      header.addListener(_listener);
+    }
+    for (var row in rows) {
+      row.addListener(_listener);
+    }
   }
+
+  @override
+  void dispose() {
+    for (var header in headers) {
+      header.removeListener(_listener);
+    }
+    for (var row in rows) {
+      row.removeListener(_listener);
+    }
+
+    super.dispose();
+  }
+
+  _listener() => notifyListeners();
 
   List<ExpandableTableHeader> get allHeaders => _getAllHeaders(headers);
 

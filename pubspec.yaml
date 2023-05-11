@@ -5,7 +5,7 @@ repository: https://github.com/rickypid/flutter_expandable_table
 issue_tracker: https://github.com/rickypid/flutter_expandable_table/issues
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: ">=2.18.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:

@@ -10,7 +10,7 @@ class ExpandableTableRow extends ChangeNotifier {
 
   late bool _childrenExpanded;
 
-  bool get childrenExpanded => _childrenExpanded;
+  bool get childrenExpanded => children?.isNotEmpty == true && _childrenExpanded;
 
   bool get visible =>
       (!childrenExpanded || !hideWhenExpanded) &&
@@ -42,9 +42,19 @@ class ExpandableTableRow extends ChangeNotifier {
     if (children != null) {
       for (var child in children!) {
         child.parent = this;
+        child.addListener(_listener);
       }
     }
   }
+  @override
+  void dispose() {
+    for (var child in children!) {
+      child.removeListener(_listener);
+    }
+    super.dispose();
+  }
+
+  _listener() => notifyListeners();
 
   int get rowsCount {
     int count = 1;

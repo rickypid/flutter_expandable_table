@@ -28,7 +28,9 @@ class ExpandableTableRow extends ChangeNotifier {
 
   toggleExpand() => childrenExpanded = !childrenExpanded;
 
-  ExpandableTableRow? parent;
+  ExpandableTableRow? _parent;
+  ExpandableTableRow? get parent => _parent;
+  int? index;
 
   ExpandableTableRow({
     required this.firstCell,
@@ -40,9 +42,10 @@ class ExpandableTableRow extends ChangeNotifier {
   }) {
     _childrenExpanded = childrenExpanded;
     if (children != null) {
-      for (var child in children!) {
-        child.parent = this;
-        child.addListener(_listener);
+      for (var i = 0; i < children!.length; i++) {
+        children![i]._parent = this;
+        children![i].addListener(_listener);
+        children![i].index = i;
       }
     }
   }
@@ -77,4 +80,6 @@ class ExpandableTableRow extends ChangeNotifier {
   }
 
   int get cellsCount => cells.length;
+
+  List<int> get address => (parent?.address ?? [])..add(index ?? 0);
 }

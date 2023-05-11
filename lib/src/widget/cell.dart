@@ -14,9 +14,6 @@ class ExpandableTableCellWidget extends StatelessWidget {
   final ExpandableTableHeader? header;
   final ExpandableTableRow? row;
 
-  //final int rowIndex; //ToDo
-  //final int columnIndex; //ToDo
-
   const ExpandableTableCellWidget({
     super.key,
     required this.builder,
@@ -27,9 +24,6 @@ class ExpandableTableCellWidget extends StatelessWidget {
     this.rowParent,
      this.header,
      this.row,
-
-    //required this.rowIndex,
-    //required this.columnIndex,
   });
 
   @override
@@ -44,8 +38,6 @@ class ExpandableTableCellWidget extends StatelessWidget {
         child: builder(
           context,
           CellDetails(
-            rowChildrenExpanded: row?.childrenExpanded == true,
-            columnChildrenExpanded: header?.childrenExpanded == true,
             headerParent: headerParent,
             rowParent: rowParent,
             header: header,

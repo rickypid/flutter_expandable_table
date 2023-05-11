@@ -22,8 +22,8 @@ class ExpandableTableCellWidget extends StatelessWidget {
     this.onTap,
     this.headerParent,
     this.rowParent,
-     this.header,
-     this.row,
+    this.header,
+    this.row,
   });
 
   @override

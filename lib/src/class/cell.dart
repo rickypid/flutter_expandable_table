@@ -11,5 +11,6 @@ class ExpandableTableCell extends ChangeNotifier {
   }) : assert((builder != null || child != null) &&
             (builder == null || child == null));
 
-  Widget build(BuildContext context, CellDetails details) =>  child ?? builder!(context, details);
+  Widget build(BuildContext context, CellDetails details) =>
+      child ?? builder!(context, details);
 }

@@ -202,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.only(left: 16.0),
               child: Row(
                 children: [
-                  Icon(details.rowChildrenExpanded
+                  Icon(details.row?.childrenExpanded == true
                       ? Icons.keyboard_arrow_down
                       : Icons.keyboard_arrow_right, color: Colors.white,),
                   Text(
@@ -214,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        children: rowIndex == 0 ? subTows1 : null,
+        children: rowIndex == 3 ? subTows1 : null,
         cells: List<ExpandableTableCell>.generate(
           columnsCount + subColumnsCount,
           (columnIndex) => ExpandableTableCell(
@@ -222,7 +222,11 @@ class _MyHomePageState extends State<MyHomePage> {
               color: primaryColor,
               margin: const EdgeInsets.all(1),
               child: GestureDetector(
-                onTap: () => details.rowParent?.toggleExpand(),
+                onTap: () {
+                  print(details.row?.address);
+                  print(details.header?.address);
+                  details.rowParent?.toggleExpand();
+                  },
                 child: Center(
                   child: Text(
                     'Cell $rowIndex:$columnIndex',
@@ -255,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        children: rowIndex == 0 ? subRows : null,
+        children: rowIndex == 4 ? subRows : null,
         cells: List<ExpandableTableCell>.generate(
           columnsCount + subColumnsCount,
           (columnIndex) => ExpandableTableCell(

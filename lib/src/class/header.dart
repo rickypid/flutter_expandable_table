@@ -18,7 +18,9 @@ class ExpandableTableHeader extends ChangeNotifier {
     notifyListeners();
   }
 
-  ExpandableTableHeader? parent;
+  ExpandableTableHeader? _parent;
+  ExpandableTableHeader? get parent => _parent;
+  int? index;
   final ExpandableTableCell cell;
   final double? width;
   final bool hideWhenExpanded;
@@ -32,9 +34,10 @@ class ExpandableTableHeader extends ChangeNotifier {
   }) {
     _childrenExpanded = childrenExpanded;
     if (children != null) {
-      for (var child in children!) {
-        child.parent = this;
-        child.addListener(_listener);
+      for (var i = 0; i < children!.length; i++) {
+        children![i]._parent = this;
+        children![i].addListener(_listener);
+        children![i].index = i;
       }
     }
   }
@@ -74,4 +77,6 @@ class ExpandableTableHeader extends ChangeNotifier {
       (parent == null || parent?.childrenExpanded == true);
 
   toggleExpand() => childrenExpanded = !childrenExpanded;
+
+  List<int> get address => (parent?.address ?? [])..add(index ?? -1);
 }

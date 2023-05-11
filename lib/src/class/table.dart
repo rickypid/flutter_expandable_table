@@ -81,11 +81,13 @@ class ExpandableTableData extends ChangeNotifier {
     _firstColumnWidth = firstColumnWidth;
     _defaultsColumnWidth = defaultsColumnWidth;
     _defaultsRowHeight = defaultsRowHeight;
-    for (var header in headers) {
-      header.addListener(_listener);
+    for (var i = 0; i < headers.length; i++) {
+      headers[i].addListener(_listener);
+      headers[i].index = i;
     }
-    for (var row in rows) {
-      row.addListener(_listener);
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].addListener(_listener);
+      rows[i].index = i;
     }
   }
 

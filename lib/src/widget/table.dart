@@ -1,6 +1,3 @@
-/// [ExpandableTable] class
-library flutter_expandable_table;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_table/src/class/cell.dart';
 import 'package:flutter_expandable_table/src/class/header.dart';
@@ -29,9 +26,9 @@ class ExpandableTable extends StatefulWidget {
   /// `optional`
   final double defaultsRowHeight;
 
-  /// [header] Contain a table header widget.
+  /// [headers] Contain a table header widget.
   /// `required`
-  final List<ExpandableTableHeader> header;
+  final List<ExpandableTableHeader> headers;
 
   /// [rows] Contain a table body rows widget.
   /// `required`
@@ -83,7 +80,7 @@ class ExpandableTable extends StatefulWidget {
   ///   - header
   const ExpandableTable({
     Key? key,
-    required this.header,
+    required this.headers,
     required this.rows,
     this.firstColumnWidth = 200,
     this.duration = const Duration(milliseconds: 500),
@@ -107,7 +104,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
   @override
   void initState() {
     int totalColumns =
-        widget.header.map((e) => e.columnsCount).fold(0, (a, b) => a + b);
+        widget.headers.map((e) => e.columnsCount).fold(0, (a, b) => a + b);
     for (int i = 0; i < widget.rows.length; i++) {
       if (widget.rows[i].cellsCount != totalColumns) {
         throw FormatException(
@@ -121,7 +118,8 @@ class _ExpandableTableState extends State<ExpandableTable> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ExpandableTableData>(
       create: (context) => ExpandableTableData(
-        headers: widget.header,
+        firstHeaderCell: widget.firstHeaderCell,
+        headers: widget.headers,
         rows: widget.rows,
         duration: widget.duration,
         curve: widget.curve,
@@ -134,25 +132,14 @@ class _ExpandableTableState extends State<ExpandableTable> {
         defaultsRowHeight: widget.defaultsRowHeight,
         headerHeight: widget.headerHeight,
       ),
-      builder: (context, child) => _Table(
-        header: widget.header,
-        rows: widget.rows,
-        firstHeaderCell: widget.firstHeaderCell,
-      ),
+      builder: (context, child) => const _Table(),
     );
   }
 }
 
 class _Table extends StatefulWidget {
-  final List<ExpandableTableHeader> header;
-  final List<ExpandableTableRow> rows;
-  final ExpandableTableCell firstHeaderCell;
-
   const _Table({
     Key? key,
-    required this.header,
-    required this.rows,
-    required this.firstHeaderCell,
   }) : super(key: key);
 
   @override
@@ -187,74 +174,81 @@ class __TableState extends State<_Table> {
     super.dispose();
   }
 
-  List<Widget> _buildHeaderCells(BuildContext context) {
-    ExpandableTableData tableData = context.watch<ExpandableTableData>();
-    return tableData.allHeaders
+  List<Widget> _buildHeaderCells(ExpandableTableData data) {
+    return data.allHeaders
         .map(
           (e) => ExpandableTableCellWidget(
-            height: tableData.headerHeight,
-            width: e.width ?? tableData.defaultsColumnWidth,
-            horizontalExpanded: e.visible,
+            height: data.headerHeight,
+            width: e.width ?? data.defaultsColumnWidth,
+            header: e,
+            headerParent: e.parent,
             onTap: () {
-              setState(() {
-                //ToDO rimuove setState
-                e.toggleExpand();
-                debugPrint(
-                    'OnTap header, childrenExpanded: ${e.childrenExpanded}');
-              });
+              e.toggleExpand();
+              debugPrint(
+                  'OnTap header, childrenExpanded: ${e.childrenExpanded}');
             },
-            builder: (context, details) =>
-                e.cell.child ?? e.cell.builder!(context, details),
+            builder: e.cell.build,
           ),
         )
         .toList();
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildRowCells(ExpandableTableData data, ExpandableTableRow row) {
+    return Row(
+      children: row.cells
+          .map(
+            (cell) => ExpandableTableCellWidget(
+              header: data.allHeaders[row.cells.indexOf(cell)],
+              row: row,
+              height: row.height ?? data.defaultsRowHeight,
+              width: data.allHeaders[row.cells.indexOf(cell)].width ??
+                  data.defaultsColumnWidth,
+              headerParent: data.allHeaders[row.cells.indexOf(cell)].parent,
+              rowParent: row.parent,
+              builder: cell.build,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildBody(ExpandableTableData data) {
     return Row(
       children: [
         SizedBox(
-          width: context.watch<ExpandableTableData>().firstColumnWidth,
+          width: data.firstColumnWidth,
           child: ScrollShadow(
-            size: context.watch<ExpandableTableData>().scrollShadowSize,
-            color: context.watch<ExpandableTableData>().scrollShadowColor,
-            curve: context.watch<ExpandableTableData>().scrollShadowCurve,
-            duration: context.watch<ExpandableTableData>().scrollShadowDuration,
+            size: data.scrollShadowSize,
+            color: data.scrollShadowColor,
+            curve: data.scrollShadowCurve,
+            duration: data.scrollShadowDuration,
             controller: _firstColumnController,
             child: Builder(
               builder: (context) {
                 Widget child = ListView(
                   controller: _firstColumnController,
                   physics: const ClampingScrollPhysics(),
-                  children: context
-                      .watch<ExpandableTableData>()
-                      .allRows
+                  children: data.allRows
                       .map(
-                        (e) => ExpandableTableCellWidget(
-                          verticalExpanded: e.visible,
-                          height: e.height ??
-                              context
-                                  .watch<ExpandableTableData>()
-                                  .defaultsRowHeight,
-                          width: context
-                              .watch<ExpandableTableData>()
-                              .firstColumnWidth,
-                          builder: (context, details) =>
-                              e.firstCell.child ??
-                              e.firstCell.builder!(context, details),
-                          onTap: () {
-                            setState(() {
-                              //ToDO rimuove setState
+                        (e) => ChangeNotifierProvider<ExpandableTableRow>.value(
+                          value: e,
+                          builder: (context, child) =>  ExpandableTableCellWidget(
+                            row: context.watch<ExpandableTableRow>(),
+                            height: context.watch<ExpandableTableRow>().height ?? data.defaultsRowHeight,
+                            width: data.firstColumnWidth,
+                            rowParent: context.watch<ExpandableTableRow>().parent,
+                            builder: context.watch<ExpandableTableRow>().firstCell.build,
+                            onTap: () {
                               e.toggleExpand();
                               debugPrint(
                                   'OnTap row, childrenExpanded: ${e.childrenExpanded}');
-                            });
-                          },
+                            },
+                          ),
                         ),
                       )
                       .toList(),
                 );
-                return context.watch<ExpandableTableData>().visibleScrollbar
+                return data.visibleScrollbar
                     ? Scrollbar(
                         thumbVisibility: true,
                         controller: _firstColumnController,
@@ -267,70 +261,38 @@ class __TableState extends State<_Table> {
         ),
         Expanded(
           child: ScrollShadow(
-            size: context.watch<ExpandableTableData>().scrollShadowSize,
+            size: data.scrollShadowSize,
             scrollDirection: Axis.horizontal,
-            color: context.watch<ExpandableTableData>().scrollShadowColor,
-            curve: context.watch<ExpandableTableData>().scrollShadowCurve,
-            duration: context.watch<ExpandableTableData>().scrollShadowDuration,
+            color: data.scrollShadowColor,
+            curve: data.scrollShadowCurve,
+            duration: data.scrollShadowDuration,
             controller: _bodyController,
             child: SingleChildScrollView(
               controller: _bodyController,
               scrollDirection: Axis.horizontal,
               physics: const ClampingScrollPhysics(),
               child: AnimatedContainer(
-                width: context.watch<ExpandableTableData>().visibleHeadersWidth,
-                duration: context.watch<ExpandableTableData>().duration,
-                curve: context.watch<ExpandableTableData>().curve,
+                width: data.visibleHeadersWidth,
+                duration: data.duration,
+                curve: data.curve,
                 child: ScrollShadow(
-                  size: context.watch<ExpandableTableData>().scrollShadowSize,
-                  color: context.watch<ExpandableTableData>().scrollShadowColor,
-                  curve: context.watch<ExpandableTableData>().scrollShadowCurve,
-                  duration:
-                      context.watch<ExpandableTableData>().scrollShadowDuration,
+                  size: data.scrollShadowSize,
+                  color: data.scrollShadowColor,
+                  curve: data.scrollShadowCurve,
+                  duration: data.scrollShadowDuration,
                   controller: _restColumnsController,
                   child: Builder(
                     builder: (context) {
                       Widget child = ListView(
                         controller: _restColumnsController,
                         physics: const ClampingScrollPhysics(),
-                        children: context
-                            .watch<ExpandableTableData>()
-                            .allRows
+                        children: data.allRows
                             .map(
-                              (e) => Row(
-                                children: e.cells
-                                    .map(
-                                      (cell) => ExpandableTableCellWidget(
-                                        horizontalExpanded: context
-                                            .watch<ExpandableTableData>()
-                                            .allHeaders[e.cells.indexOf(cell)]
-                                            .visible,
-                                        verticalExpanded: e.visible,
-                                        height: e.height ??
-                                            context
-                                                .watch<ExpandableTableData>()
-                                                .defaultsRowHeight,
-                                        width: context
-                                                .watch<ExpandableTableData>()
-                                                .allHeaders[
-                                                    e.cells.indexOf(cell)]
-                                                .width ??
-                                            context
-                                                .watch<ExpandableTableData>()
-                                                .defaultsColumnWidth,
-                                        builder: (context, details) =>
-                                            cell.child ??
-                                            cell.builder!(context, details),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
+                              (e) => _buildRowCells(data, e),
                             )
                             .toList(),
                       );
-                      return context
-                              .watch<ExpandableTableData>()
-                              .visibleScrollbar
+                      return data.visibleScrollbar
                           ? ScrollConfiguration(
                               behavior: ScrollConfiguration.of(context)
                                   .copyWith(scrollbars: false),
@@ -350,27 +312,26 @@ class __TableState extends State<_Table> {
 
   @override
   Widget build(BuildContext context) {
+    ExpandableTableData data = context.watch<ExpandableTableData>();
+
     return Column(
       children: [
         SizedBox(
-          height: context.watch<ExpandableTableData>().headerHeight,
+          height: data.headerHeight,
           child: Row(
             children: [
               ExpandableTableCellWidget(
-                height: context.watch<ExpandableTableData>().headerHeight,
-                width: context.watch<ExpandableTableData>().firstColumnWidth,
-                builder: (context, details) =>
-                    widget.firstHeaderCell.child ??
-                    widget.firstHeaderCell.builder!(context, details),
+                height: data.headerHeight,
+                width: data.firstColumnWidth,
+                builder: data.firstHeaderCell.build,
               ),
               Expanded(
                 child: ScrollShadow(
-                  size: context.watch<ExpandableTableData>().scrollShadowSize,
+                  size: data.scrollShadowSize,
                   scrollDirection: Axis.horizontal,
-                  color: context.watch<ExpandableTableData>().scrollShadowColor,
-                  curve: context.watch<ExpandableTableData>().scrollShadowCurve,
-                  duration:
-                      context.watch<ExpandableTableData>().scrollShadowDuration,
+                  color: data.scrollShadowColor,
+                  curve: data.scrollShadowCurve,
+                  duration: data.scrollShadowDuration,
                   controller: _headController,
                   child: Builder(
                     builder: (context) {
@@ -378,11 +339,9 @@ class __TableState extends State<_Table> {
                         controller: _headController,
                         physics: const ClampingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
-                        children: _buildHeaderCells(context),
+                        children: _buildHeaderCells(data),
                       );
-                      return context
-                              .watch<ExpandableTableData>()
-                              .visibleScrollbar
+                      return data.visibleScrollbar
                           ? Scrollbar(
                               thumbVisibility: true,
                               controller: _headController,
@@ -397,7 +356,7 @@ class __TableState extends State<_Table> {
           ),
         ),
         Expanded(
-          child: _buildBody(context),
+          child: _buildBody(data),
         ),
       ],
     );

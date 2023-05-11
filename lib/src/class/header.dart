@@ -5,12 +5,8 @@ class ExpandableTableHeader extends ChangeNotifier {
   final List<ExpandableTableHeader>? children;
   late bool _childrenExpanded;
 
-  bool get childrenExpanded => _childrenExpanded;
-
-  bool get visible =>
-      (!childrenExpanded || !hideWhenExpanded) &&
-      (parent == null || parent?.childrenExpanded == true);
-  ExpandableTableHeader? parent;
+  bool get childrenExpanded =>
+      children?.isNotEmpty == true && _childrenExpanded;
 
   set childrenExpanded(bool value) {
     _childrenExpanded = value;
@@ -22,11 +18,11 @@ class ExpandableTableHeader extends ChangeNotifier {
     notifyListeners();
   }
 
-  toggleExpand() => childrenExpanded = !childrenExpanded;
-
+  ExpandableTableHeader? parent;
   final ExpandableTableCell cell;
   final double? width;
   final bool hideWhenExpanded;
+
   ExpandableTableHeader({
     required this.cell,
     this.children,
@@ -38,9 +34,20 @@ class ExpandableTableHeader extends ChangeNotifier {
     if (children != null) {
       for (var child in children!) {
         child.parent = this;
+        child.addListener(_listener);
       }
     }
   }
+
+  @override
+  void dispose() {
+    for (var child in children!) {
+      child.removeListener(_listener);
+    }
+    super.dispose();
+  }
+
+  _listener() => notifyListeners();
 
   int get columnsCount {
     int count = 1;
@@ -61,4 +68,10 @@ class ExpandableTableHeader extends ChangeNotifier {
     }
     return count;
   }
+
+  bool get visible =>
+      (!childrenExpanded || !hideWhenExpanded) &&
+      (parent == null || parent?.childrenExpanded == true);
+
+  toggleExpand() => childrenExpanded = !childrenExpanded;
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // ignore: depend_on_referenced_packages
@@ -17,8 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ExpandableTable Example',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(primarySwatch: Colors.grey),
       home: const MyHomePage(),
+      scrollBehavior: AppCustomScrollBehavior(),
     );
   }
 }
@@ -30,7 +32,10 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+
 class _MyHomePageState extends State<MyHomePage> {
+
+
   ExpandableTable _buildSimpleTable() {
     const int columnsCount = 20;
     const int rowsCount = 20;
@@ -101,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      header: header,
+      headers: header,
       scrollShadowColor: accentColor,
       rows: rows,
     );
@@ -197,9 +202,9 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.only(left: 16.0),
               child: Row(
                 children: [
-                  Icon(details.verticalChildrenExpanded
-                      ? Icons.keyboard_arrow_right
-                      : Icons.keyboard_arrow_down),
+                  Icon(details.rowChildrenExpanded
+                      ? Icons.keyboard_arrow_down
+                      : Icons.keyboard_arrow_right, color: Colors.white,),
                   Text(
                     'Sub Row $rowIndex',
                     style: textStyleSubItems,
@@ -213,13 +218,16 @@ class _MyHomePageState extends State<MyHomePage> {
         cells: List<ExpandableTableCell>.generate(
           columnsCount + subColumnsCount,
           (columnIndex) => ExpandableTableCell(
-            child: Container(
+            builder: (context, details) => Container(
               color: primaryColor,
               margin: const EdgeInsets.all(1),
-              child: Center(
-                child: Text(
-                  'Cell $rowIndex:$columnIndex',
-                  style: textStyleSubItems,
+              child: GestureDetector(
+                onTap: () => details.rowParent?.toggleExpand(),
+                child: Center(
+                  child: Text(
+                    'Cell $rowIndex:$columnIndex',
+                    style: textStyleSubItems,
+                  ),
                 ),
               ),
             ),
@@ -238,9 +246,11 @@ class _MyHomePageState extends State<MyHomePage> {
             margin: const EdgeInsets.all(1),
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0),
-              child: Text(
-                'Row $rowIndex',
-                style: textStyleSubItems,
+              child: Center(
+                child: Text(
+                  'Row $rowIndex',
+                  style: textStyle,
+                ),
               ),
             ),
           ),
@@ -266,7 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return ExpandableTable(
       rows: rows,
-      header: header,
+      headers: header,
       scrollShadowColor: accentColor,
       firstHeaderCell: ExpandableTableCell(
         child: Container(
@@ -312,4 +322,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class AppCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+  };
 }

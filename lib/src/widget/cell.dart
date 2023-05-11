@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 import 'package:flutter_expandable_table/src/class/cell_details.dart';
 import 'package:flutter_expandable_table/src/class/table.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +9,10 @@ class ExpandableTableCellWidget extends StatelessWidget {
   final double height;
   final double width;
   final VoidCallback? onTap;
-  final bool horizontalExpanded;
-  final bool verticalExpanded;
+  final ExpandableTableHeader? headerParent;
+  final ExpandableTableRow? rowParent;
+  final ExpandableTableHeader? header;
+  final ExpandableTableRow? row;
 
   //final int rowIndex; //ToDo
   //final int columnIndex; //ToDo
@@ -20,8 +23,11 @@ class ExpandableTableCellWidget extends StatelessWidget {
     required this.height,
     required this.width,
     this.onTap,
-    this.horizontalExpanded = true,
-    this.verticalExpanded = true,
+    this.headerParent,
+    this.rowParent,
+     this.header,
+     this.row,
+
     //required this.rowIndex,
     //required this.columnIndex,
   });
@@ -33,13 +39,17 @@ class ExpandableTableCellWidget extends StatelessWidget {
       child: AnimatedContainer(
         duration: context.watch<ExpandableTableData>().duration,
         curve: context.watch<ExpandableTableData>().curve,
-        width: horizontalExpanded == true ? width : 0,
-        height: verticalExpanded == true ? height : 0,
+        width: header?.visible == false ? 0 : width,
+        height: rowParent?.childrenExpanded == false ? 0 : height,
         child: builder(
           context,
           CellDetails(
-            verticalChildrenExpanded: verticalExpanded,
-            horizontalChildrenExpanded: horizontalExpanded,
+            rowChildrenExpanded: row?.childrenExpanded == true,
+            columnChildrenExpanded: header?.childrenExpanded == true,
+            headerParent: headerParent,
+            rowParent: rowParent,
+            header: header,
+            row: row,
           ),
         ),
       ),

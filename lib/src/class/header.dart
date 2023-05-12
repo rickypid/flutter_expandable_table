@@ -5,6 +5,7 @@ class ExpandableTableHeader extends ChangeNotifier {
   final ExpandableTableCell cell;
   final double? width;
   final bool hideWhenExpanded;
+  final bool disableDefaultOnTapExpansion;
   final List<ExpandableTableHeader>? children;
 
   late bool _childrenExpanded;
@@ -32,6 +33,7 @@ class ExpandableTableHeader extends ChangeNotifier {
     this.hideWhenExpanded = false,
     this.width,
     bool childrenExpanded = false,
+    this.disableDefaultOnTapExpansion = false,
   }) {
     _childrenExpanded = childrenExpanded;
     if (children != null) {

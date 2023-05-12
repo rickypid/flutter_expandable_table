@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 import 'package:flutter_expandable_table/src/class/cell_details.dart';
-import 'package:flutter_expandable_table/src/class/table.dart';
+import 'package:flutter_expandable_table/src/class_internal/table.dart';
 import 'package:provider/provider.dart';
 
 class ExpandableTableCellWidget extends StatelessWidget {

@@ -33,6 +33,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  ExpandableTableCell _buildCell(String content) {
+    return ExpandableTableCell(
+      child: Container(
+        color: primaryColor,
+        margin: const EdgeInsets.all(1),
+        child: Center(
+          child: Text(
+            content,
+            style: textStyle,
+          ),
+        ),
+      ),
+    );
+  }
+
   ExpandableTable _buildSimpleTable() {
     const int columnsCount = 20;
     const int rowsCount = 20;
@@ -41,18 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       columnsCount - 1,
       (index) => ExpandableTableHeader(
         width: index % 2 == 0 ? 200 : 150,
-        cell: ExpandableTableCell(
-          child: Container(
-            color: primaryColor,
-            margin: const EdgeInsets.all(1),
-            child: Center(
-              child: Text(
-                'Column $index',
-                style: textStyle,
-              ),
-            ),
-          ),
-        ),
+        cell: _buildCell('Column $index'),
       ),
     );
     //Creation rows
@@ -60,49 +64,16 @@ class _MyHomePageState extends State<MyHomePage> {
       rowsCount,
       (rowIndex) => ExpandableTableRow(
         height: rowIndex % 2 == 0 ? 50 : 70,
-        firstCell: ExpandableTableCell(
-          child: Container(
-            color: primaryColor,
-            margin: const EdgeInsets.all(1),
-            child: Center(
-              child: Text(
-                'Row $rowIndex',
-                style: textStyle,
-              ),
-            ),
-          ),
-        ),
+        firstCell: _buildCell('Row $rowIndex'),
         cells: List<ExpandableTableCell>.generate(
           columnsCount - 1,
-          (columnIndex) => ExpandableTableCell(
-            child: Container(
-              color: primaryColor,
-              margin: const EdgeInsets.all(1),
-              child: Center(
-                child: Text(
-                  'Cell $rowIndex:$columnIndex',
-                  style: textStyle,
-                ),
-              ),
-            ),
-          ),
+          (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
         ),
       ),
     );
 
     return ExpandableTable(
-      firstHeaderCell: ExpandableTableCell(
-        child: Container(
-          color: primaryColor,
-          margin: const EdgeInsets.all(1),
-          child: const Center(
-            child: Text(
-              'Simple\nTable',
-              style: textStyle,
-            ),
-          ),
-        ),
-      ),
+      firstHeaderCell: _buildCell('Simple\nTable'),
       headers: header,
       scrollShadowColor: accentColor,
       rows: rows,
@@ -118,18 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<ExpandableTableHeader> subHeader = List.generate(
       subColumnsCount,
       (index) => ExpandableTableHeader(
-        cell: ExpandableTableCell(
-          child: Container(
-            color: primaryColor,
-            margin: const EdgeInsets.all(1),
-            child: Center(
-              child: Text(
-                'Sub Column $index',
-                style: textStyleSubItems,
-              ),
-            ),
-          ),
-        ),
+        cell: _buildCell('Sub Column $index'),
       ),
     );
 
@@ -137,18 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<ExpandableTableHeader> header = List.generate(
       columnsCount,
       (index) => ExpandableTableHeader(
-          cell: ExpandableTableCell(
-            child: Container(
-              color: primaryColor,
-              margin: const EdgeInsets.all(1),
-              child: Center(
-                child: Text(
-                  'Column $index',
-                  style: textStyle,
-                ),
-              ),
-            ),
-          ),
+          cell: _buildCell('Column $index'),
           children: index == 19 ? subHeader : null),
     );
 
@@ -156,41 +105,16 @@ class _MyHomePageState extends State<MyHomePage> {
     List<ExpandableTableRow> subTows1 = List.generate(
       rowsCount,
       (rowIndex) => ExpandableTableRow(
-        height: 30,
-        firstCell: ExpandableTableCell(
-          child: Container(
-            color: primaryColor,
-            margin: const EdgeInsets.all(1),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Text(
-                'Sub Sub Row $rowIndex',
-                style: textStyleSubItems,
-              ),
-            ),
-          ),
-        ),
+        firstCell: _buildCell('Sub Sub Row $rowIndex'),
         cells: List<ExpandableTableCell>.generate(
           columnsCount + subColumnsCount,
-          (columnIndex) => ExpandableTableCell(
-            child: Container(
-              color: primaryColor,
-              margin: const EdgeInsets.all(1),
-              child: Center(
-                child: Text(
-                  'Cell $rowIndex:$columnIndex',
-                  style: textStyleSubItems,
-                ),
-              ),
-            ),
-          ),
+          (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
         ),
       ),
     );
     List<ExpandableTableRow> subRows = List.generate(
       rowsCount,
       (rowIndex) => ExpandableTableRow(
-        height: 30,
         firstCell: ExpandableTableCell(
           builder: (context, details) => Container(
             color: primaryColor,
@@ -199,11 +123,13 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.only(left: 16.0),
               child: Row(
                 children: [
-                  Icon(
-                    details.row?.childrenExpanded == true
-                        ? Icons.keyboard_arrow_down
-                        : Icons.keyboard_arrow_right,
-                    color: Colors.white,
+                  AnimatedRotation(
+                    duration: const Duration(milliseconds: 500),
+                    turns: details.row?.childrenExpanded == true ? 0.25 : 0,
+                    child: const Icon(
+                      Icons.keyboard_arrow_right,
+                      color: Colors.white,
+                    ),
                   ),
                   Text(
                     'Sub Row $rowIndex',
@@ -217,21 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: rowIndex == 3 ? subTows1 : null,
         cells: List<ExpandableTableCell>.generate(
           columnsCount + subColumnsCount,
-          (columnIndex) => ExpandableTableCell(
-            builder: (context, details) => Container(
-              color: primaryColor,
-              margin: const EdgeInsets.all(1),
-              child: GestureDetector(
-                onTap: details.rowParent?.toggleExpand,
-                child: Center(
-                  child: Text(
-                    'Cell $rowIndex:$columnIndex',
-                    style: textStyleSubItems,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
         ),
       ),
     );
@@ -239,7 +151,6 @@ class _MyHomePageState extends State<MyHomePage> {
     List<ExpandableTableRow> rows = List.generate(
       rowsCount,
       (rowIndex) => ExpandableTableRow(
-        height: 30,
         firstCell: ExpandableTableCell(
           child: Container(
             color: primaryColor,
@@ -256,40 +167,45 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         children: rowIndex == 4 ? subRows : null,
-        cells: List<ExpandableTableCell>.generate(
-          columnsCount + subColumnsCount,
-          (columnIndex) => ExpandableTableCell(
-            child: Container(
-              color: primaryColor,
-              margin: const EdgeInsets.all(1),
-              child: Center(
-                child: Text(
-                  'Cell $rowIndex:$columnIndex',
-                  style: textStyleSubItems,
+        cells: rowIndex != 3
+            ? List<ExpandableTableCell>.generate(
+                columnsCount + subColumnsCount,
+                (columnIndex) => ExpandableTableCell(
+                  child: Container(
+                    color: primaryColor,
+                    margin: const EdgeInsets.all(1),
+                    child: Center(
+                      child: Text(
+                        'Cell $rowIndex:$columnIndex',
+                        style: textStyleSubItems,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ),
+              )
+            : null,
+        legend: rowIndex == 3
+            ? Container(
+                color: primaryColor,
+                margin: const EdgeInsets.all(1),
+                child: const Align(
+                  alignment: FractionalOffset.centerLeft,
+                  child: Text(
+                    'Row legend',
+                    style: textStyle,
+                  ),
+                ),
+              )
+            : null,
       ),
     );
 
     return ExpandableTable(
+      firstHeaderCell: _buildCell('Expandable\nTable'),
       rows: rows,
       headers: header,
+      defaultsRowHeight: 60,
       scrollShadowColor: accentColor,
-      firstHeaderCell: ExpandableTableCell(
-        child: Container(
-          color: primaryColor,
-          margin: const EdgeInsets.all(1),
-          child: const Center(
-            child: Text(
-              'Expandable\nTable',
-              style: textStyleSubItems,
-            ),
-          ),
-        ),
-      ),
     );
   }
 

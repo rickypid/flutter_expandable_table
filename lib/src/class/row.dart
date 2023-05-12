@@ -4,9 +4,11 @@ import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 class ExpandableTableRow extends ChangeNotifier {
   final List<ExpandableTableRow>? children;
   final ExpandableTableCell firstCell;
-  final List<ExpandableTableCell> cells;
+  final List<ExpandableTableCell>? cells;
+  final Widget? legend;
   final double? height;
   final bool hideWhenExpanded;
+  final bool disableDefaultOnTapExpansion;
 
   late bool _childrenExpanded;
 
@@ -28,17 +30,20 @@ class ExpandableTableRow extends ChangeNotifier {
   }
 
   ExpandableTableRow? _parent;
+
   ExpandableTableRow? get parent => _parent;
   int? index;
 
   ExpandableTableRow({
     required this.firstCell,
-    required this.cells,
+    this.cells,
+    this.legend,
     this.children,
     this.height,
     this.hideWhenExpanded = false,
     bool childrenExpanded = false,
-  }) {
+    this.disableDefaultOnTapExpansion = false,
+  }) : assert(cells != null || legend != null) {
     _childrenExpanded = childrenExpanded;
     if (children != null) {
       for (var i = 0; i < children!.length; i++) {
@@ -48,6 +53,7 @@ class ExpandableTableRow extends ChangeNotifier {
       }
     }
   }
+
   @override
   void dispose() {
     for (var child in children!) {
@@ -78,7 +84,7 @@ class ExpandableTableRow extends ChangeNotifier {
     return count;
   }
 
-  int get cellsCount => cells.length;
+  int? get cellsCount => cells?.length;
 
   List<int> get address => (parent?.address ?? [])..add(index ?? 0);
 

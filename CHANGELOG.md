@@ -1,5 +1,9 @@
 # Flutter Expandable Table
 
+## [2.0.0-beta.1] - 2023-05-13
+#### [@rickypid](https://github.com/rickypid)
+- Release 2.0.0, improved functionality and structure.
+
 ## [1.1.1] - 2022-06-07
 #### [@allato](https://github.com/allato)
 - Format code.

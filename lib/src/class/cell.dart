@@ -11,7 +11,7 @@ class ExpandableTableCell extends ChangeNotifier {
   /// the Widget to be inserted inside the cell and access the details
   /// of the cell itself during the build..
   /// `optional`
-  final Widget Function(BuildContext context, CellDetails details)? builder;
+  final CellBuilder? builder;
 
   /// [child] Widget to insert inside the cell
   /// `optional`
@@ -32,3 +32,6 @@ class ExpandableTableCell extends ChangeNotifier {
   Widget build(BuildContext context, CellDetails details) =>
       child ?? builder!(context, details);
 }
+
+typedef CellBuilder = Widget Function(
+    BuildContext context, CellDetails details);

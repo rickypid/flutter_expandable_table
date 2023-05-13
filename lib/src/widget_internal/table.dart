@@ -81,9 +81,12 @@ class InternalTableState extends State<InternalTable> {
             .toList(),
       );
     } else {
-      return SizedBox(
+      return ExpandableTableCellWidget(
         height: row.height ?? data.defaultsRowHeight,
-        child: row.legend!,
+        width: double.infinity,
+        row: row,
+        rowParent: row.parent,
+        builder: (context, details) => row.legend!,
       );
     }
   }

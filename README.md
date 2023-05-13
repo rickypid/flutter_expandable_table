@@ -20,6 +20,10 @@
 * Header and first column fixed
 * Supports vertical and horizontal scroll
 * Customizable animation Duration and Curve
+* Specific height definition for each single row
+* Specific width definition for each single column
+* Access to cell address when building cell content
+* Access to the parent rows and columns of the cell while building the contents of a cell
 
 &nbsp;
 
@@ -40,25 +44,29 @@ dependencies:
 *Complete example [available here](https://github.com/rickypid/flutter_expandable_table/blob/master/example/lib/main.dart).*
 
 ```dart
-ExpandableTable(
+     return ExpandableTable(
+      firstHeaderCell: ExpandableTableCell(
+        child: Text('Simple\nTable'),
+      ),
+      headers: headers,
       rows: rows,
-      header: header,
-      scrollShadowColor: accentColor,
     );
 ```
 
 ### ExpandableTable Properties
-* `header`: Contain a table header widget.
-* `rows`: Contain a table body rows widget.
-* `cellWidth`: determines default cell width size, this is overwritable with cell property.
-* `cellHeight`: determines default cell height size, this is overwritable with row property.
-* `headerHeight`: determines Header Row height size.
+* `firstHeaderCell`: Is the top left cell, i.e. the first header cell.
+* `headers`: contains the list of all column headers, each one of these can contain a list of further headers, this allows you to create nested and expandable columns.
+* `rows`: ontains the list of all the rows of the table, each of these can contain a list of further rows, this allows you to create nested and expandable rows.
+* `headerHeight`: is the height of each column header, i.e. the first row.
 * `firstColumnWidth`: determines first Column width size.
+* `defaultsColumnWidth`: defines the default width of all columns, it is possible to redefine it for each individual column.
+* `defaultsRowHeight`: defines the default height of all rows, it is possible to redefine it for every single row.
 * `duration`: determines duration rendered animation of Rows/Columns expansion.
 * `curve`: determines rendered curve animation of Rows/Columns expansion.
 * `scrollShadowDuration`: determines duration rendered animation of shadows.
 * `scrollShadowCurve`: determines rendered curve animation of shadows.
 * `scrollShadowColor`: determines rendered color of shadows.
+* `scrollShadowSize`: determines size of shadows.
 * `visibleScrollbar`: determines visibility of scrollbar.
 
 &nbsp;

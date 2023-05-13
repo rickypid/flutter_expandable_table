@@ -8,34 +8,40 @@ import 'package:provider/provider.dart';
 
 /// [ExpandableTable] class.
 class ExpandableTable extends StatefulWidget {
-  /// [firstHeaderCell] ToDo ???.
-  /// `optional`
+  /// [firstHeaderCell] is the top left cell, i.e. the first header cell.
+  /// `required`
   final ExpandableTableCell firstHeaderCell;
 
-  /// [headerHeight] ToDo ???.
-  /// `optional`
-  final double headerHeight;
-
-  /// [defaultsColumnWidth] ToDo ???.
-  /// `optional`
-  final double defaultsColumnWidth;
-
-  /// [defaultsRowHeight] ToDo ???.
-  /// `optional`
-  final double defaultsRowHeight;
-
-  /// [headers] Contain a table header widget.
+  /// [headers] contains the list of all column headers,
+  /// each one of these can contain a list of further headers,
+  /// this allows you to create nested and expandable columns
   /// `required`
   final List<ExpandableTableHeader> headers;
 
-  /// [rows] Contain a table body rows widget.
+  /// [rows] contains the list of all the rows of the table,
+  /// each of these can contain a list of further rows,
+  /// this allows you to create nested and expandable rows
   /// `required`
   final List<ExpandableTableRow> rows;
+
+  /// [headerHeight] is the height of each column header, i.e. the first row.
+  /// `Default: 188`
+  final double headerHeight;
 
   /// [firstColumnWidth] determines first Column width size.
   ///
   /// Default: [200]
   final double firstColumnWidth;
+
+  /// [defaultsColumnWidth] defines the default width of all columns,
+  /// it is possible to redefine it for each individual column.
+  /// Default: [120]
+  final double defaultsColumnWidth;
+
+  /// [defaultsRowHeight] defines the default height of all rows,
+  /// it is possible to redefine it for every single row.
+  /// Default: [50]
+  final double defaultsRowHeight;
 
   /// [duration] determines duration rendered animation of Rows/Columns expansion.
   ///
@@ -62,7 +68,7 @@ class ExpandableTable extends StatefulWidget {
   /// Default: [Colors.transparent]
   final Color scrollShadowColor;
 
-  /// [scrollShadowSize] ToDo ???.
+  /// [scrollShadowSize] determines size of shadows.
   ///
   /// Default: [10]
   final double scrollShadowSize;
@@ -72,17 +78,27 @@ class ExpandableTable extends StatefulWidget {
   /// Default: [false]
   final bool visibleScrollbar;
 
-  /// [ExpandableTable] constructor.
+  /// [ExpandableTable] class constructor.
   /// Required:
-  ///   - rows
-  ///   - header
+  ///   - [firstHeaderCell]
+  ///   - [rows]
+  ///   - [headers]
+  /// ```dart
+  ///      return ExpandableTable(
+  ///       firstHeaderCell: ExpandableTableCell(
+  ///         child: Text('Simple\nTable'),
+  ///       ),
+  ///       headers: headers,
+  ///       rows: rows,
+  ///     );
+  /// ```
   const ExpandableTable({
     Key? key,
     required this.firstHeaderCell,
     required this.headers,
     required this.rows,
-    this.firstColumnWidth = 200,
     this.headerHeight = 188,
+    this.firstColumnWidth = 200,
     this.defaultsColumnWidth = 120,
     this.defaultsRowHeight = 50,
     this.duration = const Duration(milliseconds: 500),

@@ -32,16 +32,70 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+class DefaultCellCard extends StatelessWidget {
+  final Widget child;
+
+  const DefaultCellCard({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: primaryColor,
+      margin: const EdgeInsets.all(1),
+      child: child,
+    );
+  }
+}
+
 class _MyHomePageState extends State<MyHomePage> {
-  ExpandableTableCell _buildCell(String content) {
+  _buildCell(String content, {CellBuilder? builder}) {
     return ExpandableTableCell(
-      child: Container(
-        color: primaryColor,
-        margin: const EdgeInsets.all(1),
-        child: Center(
-          child: Text(
-            content,
-            style: textStyle,
+      child: builder != null
+          ? null
+          : DefaultCellCard(
+              child: Center(
+                child: Text(
+                  content,
+                  style: textStyle,
+                ),
+              ),
+            ),
+      builder: builder,
+    );
+  }
+
+  ExpandableTableCell _buildFirstRowCell() {
+    return ExpandableTableCell(
+      builder: (context, details) => DefaultCellCard(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 24 * details.row!.address.length.toDouble(),
+                child: details.row?.children != null
+                    ? Align(
+                        alignment: Alignment.centerRight,
+                        child: AnimatedRotation(
+                          duration: const Duration(milliseconds: 500),
+                          turns:
+                              details.row?.childrenExpanded == true ? 0.25 : 0,
+                          child: const Icon(
+                            Icons.keyboard_arrow_right,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    : null,
+              ),
+              Text(
+                '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => 'Sub ').join() : ''}Row ${details.row!.address.last}',
+                style: textStyle,
+              ),
+            ],
           ),
         ),
       ),
@@ -52,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const int columnsCount = 20;
     const int rowsCount = 20;
     //Creation header
-    List<ExpandableTableHeader> header = List.generate(
+    List<ExpandableTableHeader> headers = List.generate(
       columnsCount - 1,
       (index) => ExpandableTableHeader(
         width: index % 2 == 0 ? 200 : 150,
@@ -74,17 +128,52 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return ExpandableTable(
       firstHeaderCell: _buildCell('Simple\nTable'),
-      headers: header,
+      headers: headers,
       scrollShadowColor: accentColor,
       rows: rows,
     );
   }
 
-  ExpandableTable _buildExpandableTable() {
-    const int columnsCount = 20;
-    const int subColumnsCount = 2;
-    const int rowsCount = 6;
+  static const int columnsCount = 20;
+  static const int subColumnsCount = 2;
+  static const int rowsCount = 6;
+  static const int subRowsCount = 3;
+  static const int totalColumns = columnsCount + subColumnsCount;
 
+  List<ExpandableTableRow> _generateRows(int quantity, {int depth = 0}) {
+    bool generateLegendRow = (depth == 0 || depth == 2);
+    return List.generate(
+      quantity,
+      (rowIndex) => ExpandableTableRow(
+        firstCell: _buildFirstRowCell(),
+        children: ((rowIndex == 3 || rowIndex == 2) && depth < 3)
+            ? _generateRows(subRowsCount, depth: depth + 1)
+            : null,
+        cells: !(generateLegendRow && (rowIndex == 3 || rowIndex == 2))
+            ? List<ExpandableTableCell>.generate(
+                totalColumns,
+                (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
+              )
+            : null,
+        legend: generateLegendRow && (rowIndex == 3 || rowIndex == 2)
+            ? const DefaultCellCard(
+                child: Align(
+                  alignment: FractionalOffset.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 24.0),
+                    child: Text(
+                      'This is row legend',
+                      style: textStyle,
+                    ),
+                  ),
+                ),
+              )
+            : null,
+      ),
+    );
+  }
+
+  ExpandableTable _buildExpandableTable() {
     //Creation header
     List<ExpandableTableHeader> subHeader = List.generate(
       subColumnsCount,
@@ -94,117 +183,21 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     //Creation header
-    List<ExpandableTableHeader> header = List.generate(
+    List<ExpandableTableHeader> headers = List.generate(
       columnsCount,
       (index) => ExpandableTableHeader(
-          cell: _buildCell('Column $index'),
-          children: index == 19 ? subHeader : null),
-    );
-
-    //Creation sub rows
-    List<ExpandableTableRow> subTows1 = List.generate(
-      rowsCount,
-      (rowIndex) => ExpandableTableRow(
-        firstCell: _buildCell('Sub Sub Row $rowIndex'),
-        cells: List<ExpandableTableCell>.generate(
-          columnsCount + subColumnsCount,
-          (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
-        ),
-      ),
-    );
-    List<ExpandableTableRow> subRows = List.generate(
-      rowsCount,
-      (rowIndex) => ExpandableTableRow(
-        firstCell: ExpandableTableCell(
-          builder: (context, details) => Container(
-            color: primaryColor,
-            margin: const EdgeInsets.all(1),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Row(
-                children: [
-                  AnimatedRotation(
-                    duration: const Duration(milliseconds: 500),
-                    turns: details.row?.childrenExpanded == true ? 0.25 : 0,
-                    child: const Icon(
-                      Icons.keyboard_arrow_right,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    'Sub Row $rowIndex',
-                    style: textStyleSubItems,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        children: rowIndex == 3 ? subTows1 : null,
-        cells: List<ExpandableTableCell>.generate(
-          columnsCount + subColumnsCount,
-          (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
-        ),
-      ),
-    );
-    //Creation rows
-    List<ExpandableTableRow> rows = List.generate(
-      rowsCount,
-      (rowIndex) => ExpandableTableRow(
-        firstCell: ExpandableTableCell(
-          child: Container(
-            color: primaryColor,
-            margin: const EdgeInsets.all(1),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Center(
-                child: Text(
-                  'Row $rowIndex',
-                  style: textStyle,
-                ),
-              ),
-            ),
-          ),
-        ),
-        children: rowIndex == 4 ? subRows : null,
-        cells: rowIndex != 3
-            ? List<ExpandableTableCell>.generate(
-                columnsCount + subColumnsCount,
-                (columnIndex) => ExpandableTableCell(
-                  child: Container(
-                    color: primaryColor,
-                    margin: const EdgeInsets.all(1),
-                    child: Center(
-                      child: Text(
-                        'Cell $rowIndex:$columnIndex',
-                        style: textStyleSubItems,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            : null,
-        legend: rowIndex == 3
-            ? Container(
-                color: primaryColor,
-                margin: const EdgeInsets.all(1),
-                child: const Align(
-                  alignment: FractionalOffset.centerLeft,
-                  child: Text(
-                    'Row legend',
-                    style: textStyle,
-                  ),
-                ),
-              )
-            : null,
-      ),
+          cell: _buildCell(
+              '${index == 1 ? 'Expandable\nColumn' : 'Column'} $index'),
+          children: index == 1 ? subHeader : null),
     );
 
     return ExpandableTable(
       firstHeaderCell: _buildCell('Expandable\nTable'),
-      rows: rows,
-      headers: header,
+      rows: _generateRows(rowsCount),
+      headers: headers,
       defaultsRowHeight: 60,
+      defaultsColumnWidth: 150,
+      firstColumnWidth: 250,
       scrollShadowColor: accentColor,
     );
   }

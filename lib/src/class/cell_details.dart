@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
 /// [CellDetails] class.

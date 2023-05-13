@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
 /// [ExpandableTableRow] class.

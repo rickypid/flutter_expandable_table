@@ -1,10 +1,15 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_table/flutter_expandable_table.dart';
-import 'package:flutter_expandable_table/src/class_internal/table.dart';
-import 'package:flutter_expandable_table/src/widget_internal/cell.dart';
+
+// Package imports:
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:provider/provider.dart';
+
+// Project imports:
+import 'package:flutter_expandable_table/flutter_expandable_table.dart';
+import 'package:flutter_expandable_table/src/class_internal/table.dart';
+import 'package:flutter_expandable_table/src/widget_internal/cell.dart';
 
 class InternalTable extends StatefulWidget {
   const InternalTable({

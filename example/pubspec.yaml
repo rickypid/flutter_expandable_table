@@ -3,7 +3,7 @@ description: A Flutter widget for create an expandable table with header and fir
 version: 2.0.0-beta.1
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: ">=2.18.0 <3.0.0"
 
 dependencies:
   flutter:

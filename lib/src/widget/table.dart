@@ -1,10 +1,15 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:flutter_expandable_table/src/class/cell.dart';
 import 'package:flutter_expandable_table/src/class/header.dart';
 import 'package:flutter_expandable_table/src/class/row.dart';
 import 'package:flutter_expandable_table/src/class_internal/table.dart';
 import 'package:flutter_expandable_table/src/widget_internal/table.dart';
-import 'package:provider/provider.dart';
 
 /// [ExpandableTable] class.
 class ExpandableTable extends StatefulWidget {

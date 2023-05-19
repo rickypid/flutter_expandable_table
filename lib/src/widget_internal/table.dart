@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
-import 'package:flutter_expandable_table/src/class_internal/table.dart';
 import 'package:flutter_expandable_table/src/widget_internal/cell.dart';
 
 class InternalTable extends StatefulWidget {
@@ -35,20 +34,20 @@ class InternalTableState extends State<InternalTable> {
     _headController = _verticalLinkedControllers.addAndGet();
     _bodyController = _verticalLinkedControllers.addAndGet();
     _horizontalLinkedControllers = LinkedScrollControllerGroup();
-    _firstColumnController = _horizontalLinkedControllers.addAndGet();
     _restColumnsController = _horizontalLinkedControllers.addAndGet();
+    _firstColumnController = _horizontalLinkedControllers.addAndGet();
   }
 
   @override
   void dispose() {
     _headController.dispose();
     _bodyController.dispose();
-    _firstColumnController.dispose();
     _restColumnsController.dispose();
+    _firstColumnController.dispose();
     super.dispose();
   }
 
-  List<Widget> _buildHeaderCells(ExpandableTableData data) {
+  List<Widget> _buildHeaderCells(ExpandableTableController data) {
     return data.allHeaders
         .map(
           (e) => ExpandableTableCellWidget(
@@ -67,7 +66,8 @@ class InternalTableState extends State<InternalTable> {
         .toList();
   }
 
-  Widget _buildRowCells(ExpandableTableData data, ExpandableTableRow row) {
+  Widget _buildRowCells(
+      ExpandableTableController data, ExpandableTableRow row) {
     if (row.cells != null) {
       return Row(
         children: row.cells!
@@ -96,7 +96,7 @@ class InternalTableState extends State<InternalTable> {
     }
   }
 
-  Widget _buildBody(ExpandableTableData data) {
+  Widget _buildBody(ExpandableTableController data) {
     return Row(
       children: [
         SizedBox(
@@ -203,7 +203,7 @@ class InternalTableState extends State<InternalTable> {
 
   @override
   Widget build(BuildContext context) {
-    ExpandableTableData data = context.watch<ExpandableTableData>();
+    ExpandableTableController data = context.watch<ExpandableTableController>();
     return Column(
       children: [
         SizedBox(

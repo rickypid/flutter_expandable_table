@@ -10,11 +10,19 @@ class ExpandableTableHeader extends ChangeNotifier {
   /// [cell] Defines the contents of the column header cell.
   /// `required`
   final ExpandableTableCell cell;
+  late List<ExpandableTableHeader>? _children;
+
+  /// [children] returns nested columns to this one.
+  List<ExpandableTableHeader>? get children => _children;
 
   /// [children] defines columns nested to this, populating
   /// this list will create an expandable column.
-  /// `optional`
-  final List<ExpandableTableHeader>? children;
+  set children(List<ExpandableTableHeader>? value) {
+    _removeChildrenListener();
+    _children = value;
+    _addChildrenListener();
+    notifyListeners();
+  }
 
   /// [width] defines the width of the column, if not specified
   /// the default width defined in the table will be used.
@@ -41,13 +49,15 @@ class ExpandableTableHeader extends ChangeNotifier {
 
   /// [childrenExpanded] allows you to expand or not the columns nested within this one.
   set childrenExpanded(bool value) {
-    _childrenExpanded = value;
-    if (children != null && !_childrenExpanded) {
-      for (var child in children!) {
-        child.childrenExpanded = false;
+    if (children != null) {
+      _childrenExpanded = value;
+      if (!_childrenExpanded) {
+        for (var child in children!) {
+          child.childrenExpanded = false;
+        }
       }
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   ExpandableTableHeader? _parent;
@@ -62,27 +72,38 @@ class ExpandableTableHeader extends ChangeNotifier {
   /// This class defines a single table header.
   ExpandableTableHeader({
     required this.cell,
-    this.children,
+    List<ExpandableTableHeader>? children,
     this.width,
     this.hideWhenExpanded = false,
     bool childrenExpanded = false,
     this.disableDefaultOnTapExpansion = false,
   }) {
     _childrenExpanded = childrenExpanded;
-    if (children != null) {
-      for (var i = 0; i < children!.length; i++) {
+    _children = children;
+    _addChildrenListener();
+  }
+
+  void _addChildrenListener() {
+    if (_children != null) {
+      for (var i = 0; i < _children!.length; i++) {
         children![i]._parent = this;
-        children![i].addListener(_listener);
-        children![i].index = i;
+        _children![i].addListener(_listener);
+        _children![i].index = i;
+      }
+    }
+  }
+
+  void _removeChildrenListener() {
+    if (_children != null) {
+      for (var child in _children!) {
+        child.removeListener(_listener);
       }
     }
   }
 
   @override
   void dispose() {
-    for (var child in children!) {
-      child.removeListener(_listener);
-    }
+    _removeChildrenListener();
     super.dispose();
   }
 

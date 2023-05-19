@@ -17,10 +17,19 @@ class ExpandableTableRow extends ChangeNotifier {
   /// `optional, if it is not defined, the legend must be defined`
   final List<ExpandableTableCell>? cells;
 
+  late List<ExpandableTableRow>? _children;
+
+  /// [children] returns nested rows to this one.
+  List<ExpandableTableRow>? get children => _children;
+
   /// [children] defines rows nested to this, populating
   /// this list will create an expandable row.
-  /// `optional`
-  final List<ExpandableTableRow>? children;
+  set children(List<ExpandableTableRow>? value) {
+    _removeChildrenListener();
+    _children = value;
+    _addChildrenListener();
+    notifyListeners();
+  }
 
   /// [legend] defines the object to insert in place of the cells of the row, used to
   /// create separation or display of totals for example.
@@ -52,13 +61,15 @@ class ExpandableTableRow extends ChangeNotifier {
 
   /// [childrenExpanded] allows you to expand or not the rows nested within this one.
   set childrenExpanded(bool value) {
-    _childrenExpanded = value;
-    if (children != null && !_childrenExpanded) {
-      for (var child in children!) {
-        child.childrenExpanded = false;
+    if (children != null) {
+      _childrenExpanded = value;
+      if (!_childrenExpanded) {
+        for (var child in children!) {
+          child.childrenExpanded = false;
+        }
       }
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   ExpandableTableRow? _parent;
@@ -74,7 +85,7 @@ class ExpandableTableRow extends ChangeNotifier {
     required this.firstCell,
     this.cells,
     this.legend,
-    this.children,
+    List<ExpandableTableRow>? children,
     this.height,
     this.hideWhenExpanded = false,
     bool childrenExpanded = false,
@@ -82,20 +93,31 @@ class ExpandableTableRow extends ChangeNotifier {
   }) : assert((cells != null || legend != null) &&
             (cells == null || legend == null)) {
     _childrenExpanded = childrenExpanded;
-    if (children != null) {
-      for (var i = 0; i < children!.length; i++) {
+    _children = children;
+    _addChildrenListener();
+  }
+
+  void _addChildrenListener() {
+    if (_children != null) {
+      for (var i = 0; i < _children!.length; i++) {
         children![i]._parent = this;
-        children![i].addListener(_listener);
-        children![i].index = i;
+        _children![i].addListener(_listener);
+        _children![i].index = i;
+      }
+    }
+  }
+
+  void _removeChildrenListener() {
+    if (_children != null) {
+      for (var child in _children!) {
+        child.removeListener(_listener);
       }
     }
   }
 
   @override
   void dispose() {
-    for (var child in children!) {
-      child.removeListener(_listener);
-    }
+    _removeChildrenListener();
     super.dispose();
   }
 

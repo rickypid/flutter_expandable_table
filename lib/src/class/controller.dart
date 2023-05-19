@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
-class ExpandableTableData extends ChangeNotifier {
-  final ExpandableTableCell firstHeaderCell;
+class ExpandableTableController extends ChangeNotifier {
+  late ExpandableTableCell _firstHeaderCell;
+  ExpandableTableCell get firstHeaderCell => _firstHeaderCell;
+
+  set firstHeaderCell(ExpandableTableCell value) {
+    _firstHeaderCell = value;
+
+    notifyListeners();
+  }
 
   late double _headerHeight;
 
@@ -62,13 +69,32 @@ class ExpandableTableData extends ChangeNotifier {
   final Color scrollShadowColor;
   final double scrollShadowSize;
 
-  final List<ExpandableTableHeader> headers;
-  final List<ExpandableTableRow> rows;
+  late List<ExpandableTableHeader> _headers;
 
-  ExpandableTableData({
-    required this.firstHeaderCell,
-    required this.headers,
-    required this.rows,
+  List<ExpandableTableHeader> get headers => _headers;
+
+  set headers(List<ExpandableTableHeader> value) {
+    _removeHeadersListener();
+    _headers = value;
+    _addHeadersListener();
+    notifyListeners();
+  }
+
+  late List<ExpandableTableRow> _rows;
+
+  List<ExpandableTableRow> get rows => _rows;
+
+  set rows(List<ExpandableTableRow> value) {
+    _removeRowsListener();
+    _rows = value;
+    _addRowsListener();
+    notifyListeners();
+  }
+
+  ExpandableTableController({
+    required ExpandableTableCell firstHeaderCell,
+    required List<ExpandableTableHeader> headers,
+    required List<ExpandableTableRow> rows,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
     this.scrollShadowDuration = const Duration(milliseconds: 500),
@@ -80,29 +106,47 @@ class ExpandableTableData extends ChangeNotifier {
     double defaultsColumnWidth = 120,
     double defaultsRowHeight = 50,
   }) {
+    _firstHeaderCell = firstHeaderCell;
     _headerHeight = headerHeight;
     _firstColumnWidth = firstColumnWidth;
     _defaultsColumnWidth = defaultsColumnWidth;
     _defaultsRowHeight = defaultsRowHeight;
-    for (var i = 0; i < headers.length; i++) {
-      headers[i].addListener(_listener);
-      headers[i].index = i;
+    _headers = headers;
+    _rows = rows;
+    _addHeadersListener();
+    _addRowsListener();
+  }
+
+  void _addHeadersListener() {
+    for (var i = 0; i < _headers.length; i++) {
+      _headers[i].addListener(_listener);
+      _headers[i].index = i;
     }
-    for (var i = 0; i < rows.length; i++) {
-      rows[i].addListener(_listener);
-      rows[i].index = i;
+  }
+
+  void _removeHeadersListener() {
+    for (var header in _headers) {
+      header.removeListener(_listener);
+    }
+  }
+
+  void _addRowsListener() {
+    for (var i = 0; i < _rows.length; i++) {
+      _rows[i].addListener(_listener);
+      _rows[i].index = i;
+    }
+  }
+
+  void _removeRowsListener() {
+    for (var row in _rows) {
+      row.removeListener(_listener);
     }
   }
 
   @override
   void dispose() {
-    for (var header in headers) {
-      header.removeListener(_listener);
-    }
-    for (var row in rows) {
-      row.removeListener(_listener);
-    }
-
+    _removeHeadersListener();
+    _removeRowsListener();
     super.dispose();
   }
 

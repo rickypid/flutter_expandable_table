@@ -55,7 +55,6 @@ class ExpandableTableRow extends ChangeNotifier {
   final bool disableDefaultOnTapExpansion;
 
   late bool _childrenExpanded;
-
   bool get childrenExpanded =>
       children?.isNotEmpty == true && _childrenExpanded;
 
@@ -162,5 +161,5 @@ class ExpandableTableRow extends ChangeNotifier {
 
   /// [toggleExpand] this method allows you to reverse the
   /// expansion or not of the child rows.
-  toggleExpand() => childrenExpanded = !childrenExpanded;
+  void toggleExpand() => childrenExpanded = !childrenExpanded;
 }

@@ -145,5 +145,5 @@ class ExpandableTableHeader extends ChangeNotifier {
 
   /// [toggleExpand] this method allows you to reverse the
   /// expansion or not of the child columns.
-  toggleExpand() => childrenExpanded = !childrenExpanded;
+  void toggleExpand() => childrenExpanded = !childrenExpanded;
 }

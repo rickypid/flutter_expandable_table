@@ -44,13 +44,13 @@ dependencies:
 *Complete example [available here](https://github.com/rickypid/flutter_expandable_table/blob/master/example/lib/main.dart).*
 
 ```dart
-     return ExpandableTable(
-firstHeaderCell: ExpandableTableCell(
-child: Text('Simple\nTable'),
-),
-headers: headers,
-rows: rows,
-);
+    return ExpandableTable(
+      firstHeaderCell: ExpandableTableCell(
+        child: Text('Simple\nTable'),
+      ),
+      headers: headers,
+      rows: rows,
+    );
 ```
 
 ### Use with the controller

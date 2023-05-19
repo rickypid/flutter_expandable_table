@@ -45,12 +45,47 @@ dependencies:
 
 ```dart
      return ExpandableTable(
-      firstHeaderCell: ExpandableTableCell(
-        child: Text('Simple\nTable'),
-      ),
-      headers: headers,
-      rows: rows,
-    );
+firstHeaderCell: ExpandableTableCell(
+child: Text('Simple\nTable'),
+),
+headers: headers,
+rows: rows,
+);
+```
+
+### Use with the controller
+
+You can create an external controller to be able to dynamically manage the table, for example to add or remove rows within it.
+
+Here is an example:
+
+```dart
+    //... Inside Widget State
+    late ExpandableTableController controller;
+    //....
+    @override
+    void initState() {
+      controller = ExpandableTableController(
+        firstHeaderCell: ExpandableTableCell(child: Container()),
+        headers: [],
+        rows: [],
+        headerHeight: 263,
+        defaultsColumnWidth: 200,
+        firstColumnWidth: 300,
+        scrollShadowColor: AppColors.black,
+      );
+      super.initState();
+    }
+    void _onEvent(){    
+      controller.rows.add(...your code...);
+    }
+    @override
+    Widget build(BuildContext context) {
+      return ExpandableTable(
+        controller: controller,
+      );
+    }
+//....
 ```
 
 ### ExpandableTable Properties

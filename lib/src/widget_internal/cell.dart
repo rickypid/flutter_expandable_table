@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
-import 'package:flutter_expandable_table/src/class_internal/table.dart';
 
 class ExpandableTableCellWidget extends StatelessWidget {
   final Function(BuildContext context, CellDetails details) builder;
@@ -35,8 +34,8 @@ class ExpandableTableCellWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: context.watch<ExpandableTableData>().duration,
-        curve: context.watch<ExpandableTableData>().curve,
+        duration: context.watch<ExpandableTableController>().duration,
+        curve: context.watch<ExpandableTableController>().curve,
         width: header?.visible == false ? 0 : width,
         height: rowParent?.childrenExpanded == false ? 0 : height,
         child: builder(

@@ -6,28 +6,31 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:flutter_expandable_table/src/class/cell.dart';
+import 'package:flutter_expandable_table/src/class/controller.dart';
 import 'package:flutter_expandable_table/src/class/header.dart';
 import 'package:flutter_expandable_table/src/class/row.dart';
-import 'package:flutter_expandable_table/src/class_internal/table.dart';
 import 'package:flutter_expandable_table/src/widget_internal/table.dart';
 
 /// [ExpandableTable] class.
 class ExpandableTable extends StatefulWidget {
   /// [firstHeaderCell] is the top left cell, i.e. the first header cell.
-  /// `required`
-  final ExpandableTableCell firstHeaderCell;
+  /// Not to be used if the [controller] is used.
+  /// `optional`
+  final ExpandableTableCell? firstHeaderCell;
 
   /// [headers] contains the list of all column headers,
   /// each one of these can contain a list of further headers,
-  /// this allows you to create nested and expandable columns
-  /// `required`
-  final List<ExpandableTableHeader> headers;
+  /// this allows you to create nested and expandable columns.
+  /// Not to be used if the [controller] is used.
+  /// `optional`
+  final List<ExpandableTableHeader>? headers;
 
   /// [rows] contains the list of all the rows of the table,
   /// each of these can contain a list of further rows,
-  /// this allows you to create nested and expandable rows
-  /// `required`
-  final List<ExpandableTableRow> rows;
+  /// this allows you to create nested and expandable rows.
+  /// Not to be used if the [controller] is used.
+  /// `optional`
+  final List<ExpandableTableRow>? rows;
 
   /// [headerHeight] is the height of each column header, i.e. the first row.
   /// `Default: 188`
@@ -83,6 +86,12 @@ class ExpandableTable extends StatefulWidget {
   /// Default: [false]
   final bool visibleScrollbar;
 
+  /// [controller] specifies the external controller of the table, allows
+  /// you to dynamically manage the data in the table externally.
+  /// Do not use if [firstHeaderCell], [headers] and [rows] are passed
+  /// 'optional'
+  final ExpandableTableController? controller;
+
   /// [ExpandableTable] class constructor.
   /// Required:
   ///   - [firstHeaderCell]
@@ -99,9 +108,10 @@ class ExpandableTable extends StatefulWidget {
   /// ```
   const ExpandableTable({
     Key? key,
-    required this.firstHeaderCell,
-    required this.headers,
-    required this.rows,
+    this.firstHeaderCell,
+    this.headers,
+    this.rows,
+    this.controller,
     this.headerHeight = 188,
     this.firstColumnWidth = 200,
     this.defaultsColumnWidth = 120,
@@ -113,7 +123,9 @@ class ExpandableTable extends StatefulWidget {
     this.scrollShadowColor = Colors.transparent,
     this.scrollShadowSize = 10,
     this.visibleScrollbar = false,
-  }) : super(key: key);
+  })  : assert((firstHeaderCell != null && rows != null && headers != null) ||
+            controller != null),
+        super(key: key);
 
   @override
   State<ExpandableTable> createState() => _ExpandableTableState();
@@ -122,13 +134,15 @@ class ExpandableTable extends StatefulWidget {
 class _ExpandableTableState extends State<ExpandableTable> {
   @override
   void initState() {
-    int totalColumns =
-        widget.headers.map((e) => e.columnsCount).fold(0, (a, b) => a + b);
-    for (int i = 0; i < widget.rows.length; i++) {
-      if (widget.rows[i].cellsCount != null &&
-          widget.rows[i].cellsCount != totalColumns) {
-        throw FormatException(
-            "Row $i cells count ${widget.rows[i].cellsCount} <> $totalColumns header cell count.");
+    if (widget.controller == null) {
+      int totalColumns =
+          widget.headers!.map((e) => e.columnsCount).fold(0, (a, b) => a + b);
+      for (int i = 0; i < widget.rows!.length; i++) {
+        if (widget.rows![i].cellsCount != null &&
+            widget.rows![i].cellsCount != totalColumns) {
+          throw FormatException(
+              "Row $i cells count ${widget.rows![i].cellsCount} <> $totalColumns header cell count.");
+        }
       }
     }
     super.initState();
@@ -136,23 +150,28 @@ class _ExpandableTableState extends State<ExpandableTable> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ExpandableTableData>(
-      create: (context) => ExpandableTableData(
-        firstHeaderCell: widget.firstHeaderCell,
-        headers: widget.headers,
-        rows: widget.rows,
-        duration: widget.duration,
-        curve: widget.curve,
-        scrollShadowDuration: widget.scrollShadowDuration,
-        scrollShadowCurve: widget.scrollShadowCurve,
-        scrollShadowColor: widget.scrollShadowColor,
-        scrollShadowSize: widget.scrollShadowSize,
-        firstColumnWidth: widget.firstColumnWidth,
-        defaultsColumnWidth: widget.defaultsColumnWidth,
-        defaultsRowHeight: widget.defaultsRowHeight,
-        headerHeight: widget.headerHeight,
-      ),
-      builder: (context, child) => const InternalTable(),
-    );
+    return widget.controller != null
+        ? ChangeNotifierProvider<ExpandableTableController>.value(
+            value: widget.controller!,
+            builder: (context, child) => const InternalTable(),
+          )
+        : ChangeNotifierProvider<ExpandableTableController>(
+            create: (context) => ExpandableTableController(
+              firstHeaderCell: widget.firstHeaderCell!,
+              headers: widget.headers!,
+              rows: widget.rows!,
+              duration: widget.duration,
+              curve: widget.curve,
+              scrollShadowDuration: widget.scrollShadowDuration,
+              scrollShadowCurve: widget.scrollShadowCurve,
+              scrollShadowColor: widget.scrollShadowColor,
+              scrollShadowSize: widget.scrollShadowSize,
+              firstColumnWidth: widget.firstColumnWidth,
+              defaultsColumnWidth: widget.defaultsColumnWidth,
+              defaultsRowHeight: widget.defaultsRowHeight,
+              headerHeight: widget.headerHeight,
+            ),
+            builder: (context, child) => const InternalTable(),
+          );
   }
 }

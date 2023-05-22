@@ -4,73 +4,25 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
+/// [ExpandableTableController] class.
 class ExpandableTableController extends ChangeNotifier {
   late ExpandableTableCell _firstHeaderCell;
-  ExpandableTableCell get firstHeaderCell => _firstHeaderCell;
 
+  /// [firstHeaderCell] is the top left cell, i.e. the first header cell.
+  /// `required`
+  ExpandableTableCell get firstHeaderCell => _firstHeaderCell;
   set firstHeaderCell(ExpandableTableCell value) {
     _firstHeaderCell = value;
-
     notifyListeners();
   }
-
-  late double _headerHeight;
-
-  double get headerHeight => _headerHeight;
-
-  set headerHeight(double value) {
-    _headerHeight = value;
-    notifyListeners();
-  }
-
-  late double _firstColumnWidth;
-
-  double get firstColumnWidth => _firstColumnWidth;
-
-  set firstColumnWidth(double value) {
-    _firstColumnWidth = value;
-    notifyListeners();
-  }
-
-  late double _defaultsColumnWidth;
-
-  double get defaultsColumnWidth => _defaultsColumnWidth;
-
-  set defaultsColumnWidth(double value) {
-    _defaultsColumnWidth = value;
-    notifyListeners();
-  }
-
-  late double _defaultsRowHeight;
-
-  double get defaultsRowHeight => _defaultsRowHeight;
-
-  set defaultsRowHeight(double value) {
-    _defaultsRowHeight = value;
-    notifyListeners();
-  }
-
-  bool _visibleScrollbar = false;
-
-  bool get visibleScrollbar => _visibleScrollbar;
-
-  set visibleScrollbar(bool value) {
-    _visibleScrollbar = value;
-    notifyListeners();
-  }
-
-  final Duration duration;
-
-  final Curve curve;
-  final Duration scrollShadowDuration;
-
-  final Curve scrollShadowCurve;
-
-  final Color scrollShadowColor;
-  final double scrollShadowSize;
 
   late List<ExpandableTableHeader> _headers;
 
+  /// [headers] contains the list of all column headers,
+  /// each one of these can contain a list of further headers,
+  /// this allows you to create nested and expandable columns.
+  /// Not to be used if the [controller] is used.
+  /// `required`
   List<ExpandableTableHeader> get headers => _headers;
 
   set headers(List<ExpandableTableHeader> value) {
@@ -82,7 +34,101 @@ class ExpandableTableController extends ChangeNotifier {
 
   late List<ExpandableTableRow> _rows;
 
+  /// [rows] contains the list of all the rows of the table,
+  /// each of these can contain a list of further rows,
+  /// this allows you to create nested and expandable rows.
+  /// Not to be used if the [controller] is used.
+  /// `required`
   List<ExpandableTableRow> get rows => _rows;
+
+  late double _headerHeight;
+
+  /// [headerHeight] is the height of each column header, i.e. the first row.
+  /// `Default: 188`
+  double get headerHeight => _headerHeight;
+
+  set headerHeight(double value) {
+    _headerHeight = value;
+    notifyListeners();
+  }
+
+  late double _firstColumnWidth;
+
+  /// [firstColumnWidth] determines first Column width size.
+  ///
+  /// Default: [200]
+  double get firstColumnWidth => _firstColumnWidth;
+
+  set firstColumnWidth(double value) {
+    _firstColumnWidth = value;
+    notifyListeners();
+  }
+
+  late double _defaultsColumnWidth;
+
+  /// [defaultsColumnWidth] defines the default width of all columns,
+  /// it is possible to redefine it for each individual column.
+  /// Default: [120]
+  double get defaultsColumnWidth => _defaultsColumnWidth;
+
+  set defaultsColumnWidth(double value) {
+    _defaultsColumnWidth = value;
+    notifyListeners();
+  }
+
+  late double _defaultsRowHeight;
+
+  /// [defaultsRowHeight] defines the default height of all rows,
+  /// it is possible to redefine it for every single row.
+  /// Default: [50]
+  double get defaultsRowHeight => _defaultsRowHeight;
+
+  set defaultsRowHeight(double value) {
+    _defaultsRowHeight = value;
+    notifyListeners();
+  }
+
+  bool _visibleScrollbar = false;
+
+  /// [visibleScrollbar] determines visibility of scrollbar.
+  ///
+  /// Default: [false]
+  bool get visibleScrollbar => _visibleScrollbar;
+
+  set visibleScrollbar(bool value) {
+    _visibleScrollbar = value;
+    notifyListeners();
+  }
+
+  /// [duration] determines duration rendered animation of Rows/Columns expansion.
+  ///
+  /// Default: [500ms]
+  final Duration duration;
+
+  /// [curve] determines rendered curve animation of Rows/Columns expansion.
+  ///
+  /// Default: [Curves.fastOutSlowIn]
+  final Curve curve;
+
+  /// [scrollShadowDuration] determines duration rendered animation of shadows.
+  ///
+  /// Default: [500ms]
+  final Duration scrollShadowDuration;
+
+  /// [scrollShadowCurve] determines rendered curve animation of shadows.
+  ///
+  /// Default: [Curves.fastOutSlowIn]
+  final Curve scrollShadowCurve;
+
+  /// [scrollShadowColor] determines rendered color of shadows.
+  ///
+  /// Default: [Colors.transparent]
+  final Color scrollShadowColor;
+
+  /// [scrollShadowSize] determines size of shadows.
+  ///
+  /// Default: [10]
+  final double scrollShadowSize;
 
   set rows(List<ExpandableTableRow> value) {
     _removeRowsListener();
@@ -91,6 +137,7 @@ class ExpandableTableController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// [ExpandableTableController] class constructor.
   ExpandableTableController({
     required ExpandableTableCell firstHeaderCell,
     required List<ExpandableTableHeader> headers,
@@ -152,11 +199,14 @@ class ExpandableTableController extends ChangeNotifier {
 
   _listener() => notifyListeners();
 
+  /// [allHeaders] returns all table headers, visible and not, including nested ones.
   List<ExpandableTableHeader> get allHeaders => _getAllHeaders(headers);
 
+  /// [visibleHeaders] returns all visible table headers, including nested ones.
   List<ExpandableTableHeader> get visibleHeaders =>
       allHeaders.where((element) => element.visible).toList();
 
+  /// [visibleHeadersWidth] returns the overall width of all visible table headers, including nested ones
   double get visibleHeadersWidth => visibleHeaders
       .map<double>((e) => e.width ?? defaultsColumnWidth)
       .fold(0, (a, b) => a + b);
@@ -173,11 +223,14 @@ class ExpandableTableController extends ChangeNotifier {
     return cells;
   }
 
+  /// [allRows] returns all table rows, visible and not, including nested ones.
   List<ExpandableTableRow> get allRows => _getAllRows(rows);
 
+  /// [visibleRows] returns all visible table rows, including nested ones.
   List<ExpandableTableRow> get visibleRows =>
       allRows.where((element) => element.visible).toList();
 
+  /// [visibleHeadersWidth] returns the overall width of all visible table rows, including nested ones
   double get visibleRowsHeight => visibleRows
       .map<double>((e) => e.height ?? defaultsRowHeight)
       .fold(0, (a, b) => a + b);

@@ -36,5 +36,6 @@ class ExpandableTableCell extends ChangeNotifier {
       child ?? builder!(context, details);
 }
 
+/// [CellBuilder] type definition.
 typedef CellBuilder = Widget Function(
     BuildContext context, CellDetails details);

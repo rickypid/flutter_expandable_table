@@ -44,6 +44,7 @@ class ExpandableTableHeader extends ChangeNotifier {
 
   late bool _childrenExpanded;
 
+  /// [childrenExpanded] returns true if the children nested to this column have been expanded.
   bool get childrenExpanded =>
       children?.isNotEmpty == true && _childrenExpanded;
 
@@ -66,6 +67,7 @@ class ExpandableTableHeader extends ChangeNotifier {
   /// the instance of the parent column is returned
   ExpandableTableHeader? get parent => _parent;
 
+  /// [index] indicates the current index of this column, referring to the parent.
   int? index;
 
   /// [ExpandableTableHeader] class constructor.

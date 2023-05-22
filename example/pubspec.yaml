@@ -16,6 +16,5 @@ dev_dependencies:
   import_sorter: ^4.6.0
   flutter_expandable_table:
     path: ../
-
 flutter:
   uses-material-design: true

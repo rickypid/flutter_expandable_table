@@ -1,8 +1,11 @@
+// Flutter imports:
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-// ignore: depend_on_referenced_packages
+// Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
+
+// ignore: depend_on_referenced_packages
 
 const Color primaryColor = Color(0xFF1e2f36); //corner
 const Color accentColor = Color(0xFF0d2026); //background
@@ -16,19 +19,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).devicePixelRatio);
-    print(MediaQuery.of(context).size);
     return MaterialApp(
       title: 'ExpandableTable Example',
       theme: ThemeData(primarySwatch: Colors.grey),
-      home: MouseRegion(
-        onHover: (event) => print(event.position),
-        child: LayoutBuilder(builder: (context, constrains) {
-          print(constrains.maxHeight);
-          print(constrains.maxWidth);
-          return const MyHomePage();
-        }),
-      ),
+      home: const MyHomePage(),
       scrollBehavior: AppCustomScrollBehavior(),
     );
   }
@@ -101,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     : null,
               ),
               Text(
-                '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => 'Sub ').join() : ''}Row ${details.row!.address.last}',
+                '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => '&Sub ').join() : ''}&Row ${details.row!.address.last}',
                 style: textStyle,
               ),
             ],
@@ -119,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       columnsCount - 1,
       (index) => ExpandableTableHeader(
         width: index % 2 == 0 ? 200 : 150,
-        cell: _buildCell('Column $index'),
+        cell: _buildCell('_Column $index'),
       ),
     );
     //Creation rows
@@ -127,10 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
       rowsCount,
       (rowIndex) => ExpandableTableRow(
         height: rowIndex % 2 == 0 ? 50 : 70,
-        firstCell: _buildCell('Row $rowIndex'),
+        firstCell: _buildCell('_Row $rowIndex'),
         cells: List<ExpandableTableCell>.generate(
           columnsCount - 1,
-          (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
+          (columnIndex) => _buildCell('_Cell $rowIndex:$columnIndex'),
         ),
       ),
     );
@@ -161,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
         cells: !(generateLegendRow && (rowIndex == 3 || rowIndex == 2))
             ? List<ExpandableTableCell>.generate(
                 totalColumns,
-                (columnIndex) => _buildCell('Cell $rowIndex:$columnIndex'),
+                (columnIndex) => _buildCell('&Cell $rowIndex:$columnIndex'),
               )
             : null,
         legend: generateLegendRow && (rowIndex == 3 || rowIndex == 2)
@@ -187,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<ExpandableTableHeader> subHeader = List.generate(
       subColumnsCount,
       (index) => ExpandableTableHeader(
-        cell: _buildCell('Sub Column $index'),
+        cell: _buildCell('&Sub Column $index'),
       ),
     );
 
@@ -196,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
       columnsCount,
       (index) => ExpandableTableHeader(
           cell: _buildCell(
-              '${index == 1 ? 'Expandable\nColumn' : 'Column'} $index'),
+              '${index == 1 ? '&Expandable\nColumn' : '&Column'} $index'),
           children: index == 1 ? subHeader : null),
     );
 

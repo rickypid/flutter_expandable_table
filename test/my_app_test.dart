@@ -22,7 +22,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ExpandableTable Example',
       theme: ThemeData(primarySwatch: Colors.grey),
-      home: const MyHomePage(),
+      home: MouseRegion(
+        onHover: (event) => print(event.position),
+        child: const MyHomePage(),
+      ),
       scrollBehavior: AppCustomScrollBehavior(),
     );
   }

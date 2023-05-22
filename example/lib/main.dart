@@ -16,19 +16,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).devicePixelRatio);
-    print(MediaQuery.of(context).size);
     return MaterialApp(
       title: 'ExpandableTable Example',
       theme: ThemeData(primarySwatch: Colors.grey),
-      home: MouseRegion(
-        onHover: (event) => print(event.position),
-        child: LayoutBuilder(builder: (context, constrains) {
-          print(constrains.maxHeight);
-          print(constrains.maxWidth);
-          return const MyHomePage();
-        }),
-      ),
+      home: const MyHomePage(),
       scrollBehavior: AppCustomScrollBehavior(),
     );
   }

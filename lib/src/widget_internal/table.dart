@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 import 'package:flutter_expandable_table/src/widget_internal/cell.dart';
 
+/// [InternalTable] it is the widget that builds the table.
 class InternalTable extends StatefulWidget {
+  /// [InternalTable] constructor.
   const InternalTable({
     Key? key,
   }) : super(key: key);
@@ -19,6 +21,7 @@ class InternalTable extends StatefulWidget {
   InternalTableState createState() => InternalTableState();
 }
 
+/// [InternalTable] state.
 class InternalTableState extends State<InternalTable> {
   late LinkedScrollControllerGroup _verticalLinkedControllers;
   late ScrollController _headController;
@@ -54,7 +57,6 @@ class InternalTableState extends State<InternalTable> {
             height: data.headerHeight,
             width: e.width ?? data.defaultsColumnWidth,
             header: e,
-            headerParent: e.parent,
             onTap: () {
               if (!e.disableDefaultOnTapExpansion) {
                 e.toggleExpand();
@@ -78,8 +80,6 @@ class InternalTableState extends State<InternalTable> {
                 height: row.height ?? data.defaultsRowHeight,
                 width: data.allHeaders[row.cells!.indexOf(cell)].width ??
                     data.defaultsColumnWidth,
-                headerParent: data.allHeaders[row.cells!.indexOf(cell)].parent,
-                rowParent: row.parent,
                 builder: cell.build,
               ),
             )
@@ -90,7 +90,6 @@ class InternalTableState extends State<InternalTable> {
         height: row.height ?? data.defaultsRowHeight,
         width: double.infinity,
         row: row,
-        rowParent: row.parent,
         builder: (context, details) => row.legend!,
       );
     }
@@ -123,8 +122,6 @@ class InternalTableState extends State<InternalTable> {
                                 context.watch<ExpandableTableRow>().height ??
                                     data.defaultsRowHeight,
                             width: data.firstColumnWidth,
-                            rowParent:
-                                context.watch<ExpandableTableRow>().parent,
                             builder: context
                                 .watch<ExpandableTableRow>()
                                 .firstCell

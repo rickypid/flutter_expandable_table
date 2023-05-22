@@ -55,6 +55,8 @@ class ExpandableTableRow extends ChangeNotifier {
   final bool disableDefaultOnTapExpansion;
 
   late bool _childrenExpanded;
+
+  /// [childrenExpanded] returns true if the children nested to this row have been expanded.
   bool get childrenExpanded =>
       children?.isNotEmpty == true && _childrenExpanded;
 
@@ -76,6 +78,8 @@ class ExpandableTableRow extends ChangeNotifier {
   /// [parent] if this row is nested within another,
   /// the instance of the parent row is returned
   ExpandableTableRow? get parent => _parent;
+
+  /// [index] indicates the current index of this row, referring to the parent.
   int? index;
 
   /// [ExpandableTableRow] class constructor.

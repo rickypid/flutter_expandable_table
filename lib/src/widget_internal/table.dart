@@ -103,9 +103,9 @@ class InternalTableState extends State<InternalTable> {
           child: ScrollShadow(
             size: data.scrollShadowSize,
             color: data.scrollShadowColor,
-            curve: data.scrollShadowCurve,
+            fadeInCurve: data.scrollShadowFadeInCurve,
+            fadeOutCurve: data.scrollShadowFadeOutCurve,
             duration: data.scrollShadowDuration,
-            controller: _firstColumnController,
             child: Builder(
               builder: (context) {
                 Widget child = ListView(
@@ -150,11 +150,10 @@ class InternalTableState extends State<InternalTable> {
         Expanded(
           child: ScrollShadow(
             size: data.scrollShadowSize,
-            scrollDirection: Axis.horizontal,
             color: data.scrollShadowColor,
-            curve: data.scrollShadowCurve,
+            fadeInCurve: data.scrollShadowFadeInCurve,
+            fadeOutCurve: data.scrollShadowFadeOutCurve,
             duration: data.scrollShadowDuration,
-            controller: _bodyController,
             child: SingleChildScrollView(
               controller: _bodyController,
               scrollDirection: Axis.horizontal,
@@ -166,9 +165,9 @@ class InternalTableState extends State<InternalTable> {
                 child: ScrollShadow(
                   size: data.scrollShadowSize,
                   color: data.scrollShadowColor,
-                  curve: data.scrollShadowCurve,
+                  fadeInCurve: data.scrollShadowFadeInCurve,
+                  fadeOutCurve: data.scrollShadowFadeOutCurve,
                   duration: data.scrollShadowDuration,
-                  controller: _restColumnsController,
                   child: Builder(
                     builder: (context) {
                       Widget child = ListView(
@@ -215,11 +214,10 @@ class InternalTableState extends State<InternalTable> {
               Expanded(
                 child: ScrollShadow(
                   size: data.scrollShadowSize,
-                  scrollDirection: Axis.horizontal,
                   color: data.scrollShadowColor,
-                  curve: data.scrollShadowCurve,
+                  fadeInCurve: data.scrollShadowFadeInCurve,
+                  fadeOutCurve: data.scrollShadowFadeOutCurve,
                   duration: data.scrollShadowDuration,
-                  controller: _headController,
                   child: Builder(
                     builder: (context) {
                       Widget child = ListView(

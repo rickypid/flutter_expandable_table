@@ -99,7 +99,8 @@ Here is an example:
 * `duration`: determines duration rendered animation of Rows/Columns expansion.
 * `curve`: determines rendered curve animation of Rows/Columns expansion.
 * `scrollShadowDuration`: determines duration rendered animation of shadows.
-* `scrollShadowCurve`: determines rendered curve animation of shadows.
+* `scrollShadowFadeInCurve`: determines rendered curve animation of shadows appearance.
+* `scrollShadowFadeOutCurve`: determines rendered curve animation of shadows disappearance.
 * `scrollShadowColor`: determines rendered color of shadows.
 * `scrollShadowSize`: determines size of shadows.
 * `visibleScrollbar`: determines visibility of scrollbar.

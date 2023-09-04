@@ -1,5 +1,9 @@
 # Flutter Expandable Table
 
+## [2.0.1] - 2023-09-04
+#### [@rickypid](https://github.com/rickypid)
+- Update flutter_scroll_shadow dependency, add GitHub Actions.
+
 ## [2.0.0] - 2023-06-01
 #### [@rickypid](https://github.com/rickypid)
 - Release 2.0.0, improved documentation and tests.

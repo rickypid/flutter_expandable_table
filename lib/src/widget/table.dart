@@ -163,7 +163,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
               duration: widget.duration,
               curve: widget.curve,
               scrollShadowDuration: widget.scrollShadowDuration,
-              scrollShadowCurve: widget.scrollShadowCurve,
+              scrollShadowFadeInCurve: widget.scrollShadowCurve,
               scrollShadowColor: widget.scrollShadowColor,
               scrollShadowSize: widget.scrollShadowSize,
               firstColumnWidth: widget.firstColumnWidth,

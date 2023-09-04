@@ -115,10 +115,15 @@ class ExpandableTableController extends ChangeNotifier {
   /// Default: [500ms]
   final Duration scrollShadowDuration;
 
-  /// [scrollShadowCurve] determines rendered curve animation of shadows.
+  /// [scrollShadowFadeInCurve] determines rendered curve animation of shadows appearance.
   ///
-  /// Default: [Curves.fastOutSlowIn]
-  final Curve scrollShadowCurve;
+  /// Default: [Curves.easeIn]
+  final Curve scrollShadowFadeInCurve;
+
+  /// [scrollShadowFadeOutCurve] determines rendered curve animation of shadows disappearance.
+  ///
+  /// Default: [Curves.easeOut]
+  final Curve scrollShadowFadeOutCurve;
 
   /// [scrollShadowColor] determines rendered color of shadows.
   ///
@@ -145,7 +150,8 @@ class ExpandableTableController extends ChangeNotifier {
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
     this.scrollShadowDuration = const Duration(milliseconds: 500),
-    this.scrollShadowCurve = Curves.fastOutSlowIn,
+    this.scrollShadowFadeInCurve = Curves.easeIn,
+    this.scrollShadowFadeOutCurve = Curves.easeOut,
     this.scrollShadowColor = Colors.transparent,
     this.scrollShadowSize = 10,
     double headerHeight = 188,

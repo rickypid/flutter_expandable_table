@@ -1,6 +1,6 @@
 name: flutter_expandable_table_example
 description: A Flutter widget for create an expandable table with header and first column fixed.
-version: 2.0.0
+version: 2.0.1
 
 environment:
   sdk: ">=2.18.0 <4.0.0"

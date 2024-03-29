@@ -1,5 +1,10 @@
 # Flutter Expandable Table
 
+## [2.0.2] - 2024-03-29
+#### [@RichiB20](https://github.com/RichiB20)
+- Fixed vertical Scrollbar and added horizontal Scrollbar.
+- Fixed table size.
+
 ## [2.0.1] - 2023-09-04
 #### [@rickypid](https://github.com/rickypid)
 - Update flutter_scroll_shadow dependency, add GitHub Actions.

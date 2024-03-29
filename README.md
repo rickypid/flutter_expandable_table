@@ -103,7 +103,7 @@ Here is an example:
 * `scrollShadowFadeOutCurve`: determines rendered curve animation of shadows disappearance.
 * `scrollShadowColor`: determines rendered color of shadows.
 * `scrollShadowSize`: determines size of shadows.
-* `visibleScrollbar`: determines visibility of scrollbar.
+* `visibleScrollbar`: determines visibility of horizontal and vertical scrollbars.
 
 &nbsp;
 

@@ -14,8 +14,8 @@ import 'package:flutter_expandable_table/src/widget_internal/cell.dart';
 class InternalTable extends StatefulWidget {
   /// [InternalTable] constructor.
   const InternalTable({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   InternalTableState createState() => InternalTableState();

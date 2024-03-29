@@ -81,7 +81,7 @@ class ExpandableTable extends StatefulWidget {
   /// Default: [10]
   final double scrollShadowSize;
 
-  /// [visibleScrollbar] determines visibility of scrollbar.
+  /// [visibleScrollbar] determines visibility of horizontal and vertical scrollbars.
   ///
   /// Default: [false]
   final bool visibleScrollbar;
@@ -107,7 +107,7 @@ class ExpandableTable extends StatefulWidget {
   ///     );
   /// ```
   const ExpandableTable({
-    Key? key,
+    super.key,
     this.firstHeaderCell,
     this.headers,
     this.rows,
@@ -124,8 +124,7 @@ class ExpandableTable extends StatefulWidget {
     this.scrollShadowSize = 10,
     this.visibleScrollbar = false,
   })  : assert((firstHeaderCell != null && rows != null && headers != null) ||
-            controller != null),
-        super(key: key);
+            controller != null);
 
   @override
   State<ExpandableTable> createState() => _ExpandableTableState();

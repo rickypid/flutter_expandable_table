@@ -90,7 +90,7 @@ class ExpandableTableController extends ChangeNotifier {
 
   bool _visibleScrollbar = false;
 
-  /// [visibleScrollbar] determines visibility of scrollbar.
+  /// [visibleScrollbar] determines visibility of horizontal and vertical scrollbars.
   ///
   /// Default: [false]
   bool get visibleScrollbar => _visibleScrollbar;

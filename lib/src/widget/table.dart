@@ -123,7 +123,7 @@ class ExpandableTable extends StatefulWidget {
     this.scrollShadowColor = Colors.transparent,
     this.scrollShadowSize = 10,
     this.visibleScrollbar = false,
-  })  : assert((firstHeaderCell != null && rows != null && headers != null) ||
+  }) : assert((firstHeaderCell != null && rows != null && headers != null) ||
             controller != null);
 
   @override

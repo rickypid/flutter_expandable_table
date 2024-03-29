@@ -39,8 +39,7 @@ class ExpandableTableCellWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: context.watch<ExpandableTableController>().duration,
@@ -58,5 +57,4 @@ class ExpandableTableCellWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

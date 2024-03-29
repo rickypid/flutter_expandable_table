@@ -203,7 +203,7 @@ class ExpandableTableController extends ChangeNotifier {
     super.dispose();
   }
 
-  _listener() => notifyListeners();
+  void _listener() => notifyListeners();
 
   /// [allHeaders] returns all table headers, visible and not, including nested ones.
   List<ExpandableTableHeader> get allHeaders => _getAllHeaders(headers);
@@ -219,7 +219,7 @@ class ExpandableTableController extends ChangeNotifier {
 
   List<ExpandableTableHeader> _getAllHeaders(
       List<ExpandableTableHeader> headers) {
-    List<ExpandableTableHeader> cells = [];
+    final List<ExpandableTableHeader> cells = [];
     for (var header in headers) {
       cells.add(header);
       if (header.children != null) {
@@ -242,7 +242,7 @@ class ExpandableTableController extends ChangeNotifier {
       .fold(0, (a, b) => a + b);
 
   List<ExpandableTableRow> _getAllRows(List<ExpandableTableRow> rows) {
-    List<ExpandableTableRow> rowsTmp = [];
+    final List<ExpandableTableRow> rowsTmp = [];
     for (var row in rows) {
       rowsTmp.add(row);
       if (row.children != null) {

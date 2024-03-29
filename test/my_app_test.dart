@@ -18,14 +18,12 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
       title: 'ExpandableTable Example',
       theme: ThemeData(primarySwatch: Colors.grey),
       home: const MyHomePage(),
       scrollBehavior: AppCustomScrollBehavior(),
     );
-  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -44,18 +42,15 @@ class DefaultCellCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       color: primaryColor,
       margin: const EdgeInsets.all(1),
       child: child,
     );
-  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  _buildCell(String content, {CellBuilder? builder}) {
-    return ExpandableTableCell(
+  ExpandableTableCell _buildCell(String content, {CellBuilder? builder}) => ExpandableTableCell(
       child: builder != null
           ? null
           : DefaultCellCard(
@@ -68,10 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
       builder: builder,
     );
-  }
 
-  ExpandableTableCell _buildFirstRowCell() {
-    return ExpandableTableCell(
+  ExpandableTableCell _buildFirstRowCell() => ExpandableTableCell(
       builder: (context, details) => DefaultCellCard(
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0),
@@ -103,13 +96,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
-  }
 
   ExpandableTable _buildSimpleTable() {
     const int columnsCount = 20;
     const int rowsCount = 20;
     //Creation header
-    List<ExpandableTableHeader> headers = List.generate(
+    final List<ExpandableTableHeader> headers = List.generate(
       columnsCount - 1,
       (index) => ExpandableTableHeader(
         width: index % 2 == 0 ? 200 : 150,
@@ -117,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
     //Creation rows
-    List<ExpandableTableRow> rows = List.generate(
+    final List<ExpandableTableRow> rows = List.generate(
       rowsCount,
       (rowIndex) => ExpandableTableRow(
         height: rowIndex % 2 == 0 ? 50 : 70,
@@ -144,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const int totalColumns = columnsCount + subColumnsCount;
 
   List<ExpandableTableRow> _generateRows(int quantity, {int depth = 0}) {
-    bool generateLegendRow = (depth == 0 || depth == 2);
+    final bool generateLegendRow = (depth == 0 || depth == 2);
     return List.generate(
       quantity,
       (rowIndex) => ExpandableTableRow(
@@ -178,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ExpandableTable _buildExpandableTable() {
     //Creation header
-    List<ExpandableTableHeader> subHeader = List.generate(
+    final List<ExpandableTableHeader> subHeader = List.generate(
       subColumnsCount,
       (index) => ExpandableTableHeader(
         cell: _buildCell('&Sub Column $index'),
@@ -186,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     //Creation header
-    List<ExpandableTableHeader> headers = List.generate(
+    final List<ExpandableTableHeader> headers = List.generate(
       columnsCount,
       (index) => ExpandableTableHeader(
           cell: _buildCell(
@@ -206,8 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text(
             '   Simple Table                    |                    Expandable Table'),
@@ -233,7 +224,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
-  }
 }
 
 class AppCustomScrollBehavior extends MaterialScrollBehavior {

@@ -50,8 +50,7 @@ class InternalTableState extends State<InternalTable> {
     super.dispose();
   }
 
-  List<Widget> _buildHeaderCells(ExpandableTableController data) {
-    return data.allHeaders
+  List<Widget> _buildHeaderCells(ExpandableTableController data) => data.allHeaders
         .map(
           (e) => ExpandableTableCellWidget(
             height: data.headerHeight,
@@ -66,7 +65,6 @@ class InternalTableState extends State<InternalTable> {
           ),
         )
         .toList();
-  }
 
   Widget _buildRowCells(
       ExpandableTableController data, ExpandableTableRow row) {
@@ -95,8 +93,7 @@ class InternalTableState extends State<InternalTable> {
     }
   }
 
-  Widget _buildBody(ExpandableTableController data) {
-    return Row(
+  Widget _buildBody(ExpandableTableController data) => Row(
       children: [
         SizedBox(
           width: data.firstColumnWidth,
@@ -140,7 +137,7 @@ class InternalTableState extends State<InternalTable> {
         ),
         Builder(
           builder: (context) {
-            Widget child = ScrollConfiguration(
+            final Widget child = ScrollConfiguration(
               behavior:
                   ScrollConfiguration.of(context).copyWith(scrollbars: false),
               child: ScrollShadow(
@@ -198,10 +195,8 @@ class InternalTableState extends State<InternalTable> {
         ),
       ],
     );
-  }
 
-  double _computeTableWidth({required ExpandableTableController data}) {
-    return data.firstColumnWidth +
+  double _computeTableWidth({required ExpandableTableController data}) => data.firstColumnWidth +
         (data.headers
             .map((e) =>
                 (e.width ?? data.defaultsColumnWidth) +
@@ -209,10 +204,8 @@ class InternalTableState extends State<InternalTable> {
                     expandableTableHeader: e,
                     defaultsColumnWidth: data.defaultsColumnWidth))
             .reduce((value, element) => value + element));
-  }
 
-  double _computeTableHeight({required ExpandableTableController data}) {
-    return data.headerHeight +
+  double _computeTableHeight({required ExpandableTableController data}) => data.headerHeight +
         (data.rows
             .map((e) =>
                 (e.height ?? data.defaultsRowHeight) +
@@ -220,13 +213,11 @@ class InternalTableState extends State<InternalTable> {
                     expandableTableRow: e,
                     defaultsRowHeight: data.defaultsRowHeight))
             .reduce((value, element) => value + element));
-  }
 
   double _computeChildrenHeight({
     required ExpandableTableRow expandableTableRow,
     required double defaultsRowHeight,
-  }) {
-    return expandableTableRow.childrenExpanded
+  }) => expandableTableRow.childrenExpanded
         ? expandableTableRow.children!
             .map((e) =>
                 (e.height ?? defaultsRowHeight) +
@@ -235,13 +226,11 @@ class InternalTableState extends State<InternalTable> {
                     defaultsRowHeight: defaultsRowHeight))
             .reduce((value, element) => value + element)
         : 0;
-  }
 
   double _computeChildrenWidth({
     required ExpandableTableHeader expandableTableHeader,
     required double defaultsColumnWidth,
-  }) {
-    return expandableTableHeader.childrenExpanded
+  }) => expandableTableHeader.childrenExpanded
         ? expandableTableHeader.children!
             .map((e) =>
                 (e.width ?? defaultsColumnWidth) +
@@ -250,14 +239,12 @@ class InternalTableState extends State<InternalTable> {
                     defaultsColumnWidth: defaultsColumnWidth))
             .reduce((value, element) => value + element)
         : 0;
-  }
 
   @override
   Widget build(BuildContext context) {
-    ExpandableTableController data = context.watch<ExpandableTableController>();
+    final ExpandableTableController data = context.watch<ExpandableTableController>();
     return LayoutBuilder(
-      builder: (context, constraints) {
-        return SizedBox(
+      builder: (context, constraints) => SizedBox(
           width: _computeTableWidth(data: data) < constraints.maxWidth
               ? _computeTableWidth(data: data)
               : null,
@@ -299,8 +286,7 @@ class InternalTableState extends State<InternalTable> {
               ),
             ],
           ),
-        );
-      },
+        ),
     );
   }
 }

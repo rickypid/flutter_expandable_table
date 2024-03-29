@@ -134,13 +134,13 @@ class _ExpandableTableState extends State<ExpandableTable> {
   @override
   void initState() {
     if (widget.controller == null) {
-      int totalColumns =
+      final int totalColumns =
           widget.headers!.map((e) => e.columnsCount).fold(0, (a, b) => a + b);
       for (int i = 0; i < widget.rows!.length; i++) {
         if (widget.rows![i].cellsCount != null &&
             widget.rows![i].cellsCount != totalColumns) {
           throw FormatException(
-              "Row $i cells count ${widget.rows![i].cellsCount} <> $totalColumns header cell count.");
+              'Row $i cells count ${widget.rows![i].cellsCount} <> $totalColumns header cell count.');
         }
       }
     }
@@ -148,8 +148,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return widget.controller != null
+  Widget build(BuildContext context) => widget.controller != null
         ? ChangeNotifierProvider<ExpandableTableController>.value(
             value: widget.controller!,
             builder: (context, child) => const InternalTable(),
@@ -172,5 +171,4 @@ class _ExpandableTableState extends State<ExpandableTable> {
             ),
             builder: (context, child) => const InternalTable(),
           );
-  }
 }

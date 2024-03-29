@@ -5,5 +5,16 @@ include: package:flutter_lints/flutter.yaml
 linter:
   rules:
     - public_member_api_docs
-    - type_annotate_public_apis
     - recursive_getters
+    - always_use_package_imports
+    - prefer_expression_function_bodies
+    - prefer_single_quotes
+    - always_declare_return_types
+    - avoid_unused_constructor_parameters
+    - prefer_final_fields
+    - prefer_final_locals
+    - sort_pub_dependencies
+    - type_annotate_public_apis
+    - unawaited_futures
+    - use_named_constants
+    - use_super_parameters

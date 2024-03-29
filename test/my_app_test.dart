@@ -19,11 +19,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-      title: 'ExpandableTable Example',
-      theme: ThemeData(primarySwatch: Colors.grey),
-      home: const MyHomePage(),
-      scrollBehavior: AppCustomScrollBehavior(),
-    );
+        title: 'ExpandableTable Example',
+        theme: ThemeData(primarySwatch: Colors.grey),
+        home: const MyHomePage(),
+        scrollBehavior: AppCustomScrollBehavior(),
+      );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -43,59 +43,61 @@ class DefaultCellCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      color: primaryColor,
-      margin: const EdgeInsets.all(1),
-      child: child,
-    );
+        color: primaryColor,
+        margin: const EdgeInsets.all(1),
+        child: child,
+      );
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ExpandableTableCell _buildCell(String content, {CellBuilder? builder}) => ExpandableTableCell(
-      child: builder != null
-          ? null
-          : DefaultCellCard(
-              child: Center(
-                child: Text(
-                  content,
-                  style: textStyle,
+  ExpandableTableCell _buildCell(String content, {CellBuilder? builder}) =>
+      ExpandableTableCell(
+        child: builder != null
+            ? null
+            : DefaultCellCard(
+                child: Center(
+                  child: Text(
+                    content,
+                    style: textStyle,
+                  ),
                 ),
               ),
-            ),
-      builder: builder,
-    );
+        builder: builder,
+      );
 
   ExpandableTableCell _buildFirstRowCell() => ExpandableTableCell(
-      builder: (context, details) => DefaultCellCard(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 24 * details.row!.address.length.toDouble(),
-                child: details.row?.children != null
-                    ? Align(
-                        alignment: Alignment.centerRight,
-                        child: AnimatedRotation(
-                          duration: const Duration(milliseconds: 500),
-                          turns:
-                              details.row?.childrenExpanded == true ? 0.25 : 0,
-                          child: const Icon(
-                            Icons.keyboard_arrow_right,
-                            color: Colors.white,
+        builder: (context, details) => DefaultCellCard(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 24 * details.row!.address.length.toDouble(),
+                  child: details.row?.children != null
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: AnimatedRotation(
+                            duration: const Duration(milliseconds: 500),
+                            turns: details.row?.childrenExpanded == true
+                                ? 0.25
+                                : 0,
+                            child: const Icon(
+                              Icons.keyboard_arrow_right,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      )
-                    : null,
-              ),
-              Text(
-                '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => '&Sub ').join() : ''}&Row ${details.row!.address.last}',
-                style: textStyle,
-              ),
-            ],
+                        )
+                      : null,
+                ),
+                Text(
+                  '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => '&Sub ').join() : ''}&Row ${details.row!.address.last}',
+                  style: textStyle,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 
   ExpandableTable _buildSimpleTable() {
     const int columnsCount = 20;
@@ -199,31 +201,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: const Text(
-            '   Simple Table                    |                    Expandable Table'),
-        centerTitle: true,
-      ),
-      body: Container(
-        color: accentColor,
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: _buildSimpleTable(),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: _buildExpandableTable(),
-              ),
-            ),
-          ],
+        appBar: AppBar(
+          title: const Text(
+              '   Simple Table                    |                    Expandable Table'),
+          centerTitle: true,
         ),
-      ),
-    );
+        body: Container(
+          color: accentColor,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: _buildSimpleTable(),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: _buildExpandableTable(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class AppCustomScrollBehavior extends MaterialScrollBehavior {

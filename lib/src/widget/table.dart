@@ -149,26 +149,26 @@ class _ExpandableTableState extends State<ExpandableTable> {
 
   @override
   Widget build(BuildContext context) => widget.controller != null
-        ? ChangeNotifierProvider<ExpandableTableController>.value(
-            value: widget.controller!,
-            builder: (context, child) => const InternalTable(),
-          )
-        : ChangeNotifierProvider<ExpandableTableController>(
-            create: (context) => ExpandableTableController(
-              firstHeaderCell: widget.firstHeaderCell!,
-              headers: widget.headers!,
-              rows: widget.rows!,
-              duration: widget.duration,
-              curve: widget.curve,
-              scrollShadowDuration: widget.scrollShadowDuration,
-              scrollShadowFadeInCurve: widget.scrollShadowCurve,
-              scrollShadowColor: widget.scrollShadowColor,
-              scrollShadowSize: widget.scrollShadowSize,
-              firstColumnWidth: widget.firstColumnWidth,
-              defaultsColumnWidth: widget.defaultsColumnWidth,
-              defaultsRowHeight: widget.defaultsRowHeight,
-              headerHeight: widget.headerHeight,
-            ),
-            builder: (context, child) => const InternalTable(),
-          );
+      ? ChangeNotifierProvider<ExpandableTableController>.value(
+          value: widget.controller!,
+          builder: (context, child) => const InternalTable(),
+        )
+      : ChangeNotifierProvider<ExpandableTableController>(
+          create: (context) => ExpandableTableController(
+            firstHeaderCell: widget.firstHeaderCell!,
+            headers: widget.headers!,
+            rows: widget.rows!,
+            duration: widget.duration,
+            curve: widget.curve,
+            scrollShadowDuration: widget.scrollShadowDuration,
+            scrollShadowFadeInCurve: widget.scrollShadowCurve,
+            scrollShadowColor: widget.scrollShadowColor,
+            scrollShadowSize: widget.scrollShadowSize,
+            firstColumnWidth: widget.firstColumnWidth,
+            defaultsColumnWidth: widget.defaultsColumnWidth,
+            defaultsRowHeight: widget.defaultsRowHeight,
+            headerHeight: widget.headerHeight,
+          ),
+          builder: (context, child) => const InternalTable(),
+        );
 }

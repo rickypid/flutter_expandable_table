@@ -147,6 +147,7 @@ class ExpandableTableController extends ChangeNotifier {
     required ExpandableTableCell firstHeaderCell,
     required List<ExpandableTableHeader> headers,
     required List<ExpandableTableRow> rows,
+    bool visibleScrollbar = false,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
     this.scrollShadowDuration = const Duration(milliseconds: 500),
@@ -166,6 +167,7 @@ class ExpandableTableController extends ChangeNotifier {
     _defaultsRowHeight = defaultsRowHeight;
     _headers = headers;
     _rows = rows;
+    _visibleScrollbar = visibleScrollbar;
     _addHeadersListener();
     _addRowsListener();
   }

@@ -131,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
       headers: headers,
       scrollShadowColor: accentColor,
       rows: rows,
+      visibleScrollbar: true,
     );
   }
 
@@ -199,6 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
       defaultsColumnWidth: 150,
       firstColumnWidth: 250,
       scrollShadowColor: accentColor,
+      visibleScrollbar: true,
     );
   }
 
@@ -213,6 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         color: accentColor,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Padding(

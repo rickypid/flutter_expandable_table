@@ -168,6 +168,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
             defaultsColumnWidth: widget.defaultsColumnWidth,
             defaultsRowHeight: widget.defaultsRowHeight,
             headerHeight: widget.headerHeight,
+            visibleScrollbar: widget.visibleScrollbar,
           ),
           builder: (context, child) => const InternalTable(),
         );

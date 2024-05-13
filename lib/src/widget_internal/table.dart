@@ -180,11 +180,11 @@ class InternalTableState extends State<InternalTable> {
                           ? Scrollbar(
                               controller: _horizontalBodyController,
                               thumbVisibility: true,
-                              trackVisibility: true,
+                              trackVisibility: data.trackVisibilityScrollbar,
                               child: Scrollbar(
                                 controller: _restColumnsController,
                                 thumbVisibility: true,
-                                trackVisibility: true,
+                                trackVisibility: data.trackVisibilityScrollbar,
                                 notificationPredicate: (notification) =>
                                     notification.depth >= 0,
                                 child: child,

@@ -100,6 +100,18 @@ class ExpandableTableController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _trackVisibilityScrollbar = false;
+
+  /// [trackVisibilityScrollbar] indicates that the scrollbar track should be visible.
+  ///
+  /// Default: [false]
+  bool get trackVisibilityScrollbar => _trackVisibilityScrollbar;
+
+  set trackVisibilityScrollbar(bool value) {
+    _trackVisibilityScrollbar = value;
+    notifyListeners();
+  }
+
   /// [duration] determines duration rendered animation of Rows/Columns expansion.
   ///
   /// Default: [500ms]
@@ -148,6 +160,7 @@ class ExpandableTableController extends ChangeNotifier {
     required List<ExpandableTableHeader> headers,
     required List<ExpandableTableRow> rows,
     bool visibleScrollbar = false,
+    bool trackVisibilityScrollbar = false,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
     this.scrollShadowDuration = const Duration(milliseconds: 500),
@@ -168,6 +181,7 @@ class ExpandableTableController extends ChangeNotifier {
     _headers = headers;
     _rows = rows;
     _visibleScrollbar = visibleScrollbar;
+    _trackVisibilityScrollbar = trackVisibilityScrollbar;
     _addHeadersListener();
     _addRowsListener();
   }

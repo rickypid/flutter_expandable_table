@@ -96,47 +96,58 @@ class InternalTableState extends State<InternalTable> {
 
   Widget _buildBody(ExpandableTableController data) => Row(
         children: [
-          SizedBox(
-            width: data.firstColumnWidth,
-            child: ScrollConfiguration(
-              behavior:
-                  ScrollConfiguration.of(context).copyWith(scrollbars: false),
-              child: ScrollShadow(
-                size: data.scrollShadowSize,
-                color: data.scrollShadowColor,
-                fadeInCurve: data.scrollShadowFadeInCurve,
-                fadeOutCurve: data.scrollShadowFadeOutCurve,
-                duration: data.scrollShadowDuration,
-                child: ListView(
-                  controller: _firstColumnController,
-                  physics: const ClampingScrollPhysics(),
-                  children: data.allRows
-                      .map(
-                        (e) => ChangeNotifierProvider<ExpandableTableRow>.value(
-                          value: e,
-                          builder: (context, child) =>
-                              ExpandableTableCellWidget(
-                            row: context.watch<ExpandableTableRow>(),
-                            height:
-                                context.watch<ExpandableTableRow>().height ??
-                                    data.defaultsRowHeight,
-                            width: data.firstColumnWidth,
-                            builder: context
-                                .watch<ExpandableTableRow>()
-                                .firstCell
-                                .build,
-                            onTap: () {
-                              if (!e.disableDefaultOnTapExpansion) {
-                                e.toggleExpand();
-                              }
-                            },
-                          ),
+          Builder(
+            builder: (context) {
+              final Widget child = ListView(
+                controller: _firstColumnController,
+                physics: const ClampingScrollPhysics(),
+                children: data.allRows
+                    .map(
+                      (e) => ChangeNotifierProvider<ExpandableTableRow>.value(
+                        value: e,
+                        builder: (context, child) => ExpandableTableCellWidget(
+                          row: context.watch<ExpandableTableRow>(),
+                          height: context.watch<ExpandableTableRow>().height ??
+                              data.defaultsRowHeight,
+                          width: data.firstColumnWidth,
+                          builder: context
+                              .watch<ExpandableTableRow>()
+                              .firstCell
+                              .build,
+                          onTap: () {
+                            if (!e.disableDefaultOnTapExpansion) {
+                              e.toggleExpand();
+                            }
+                          },
                         ),
-                      )
-                      .toList(),
+                      ),
+                    )
+                    .toList(),
+              );
+              return SizedBox(
+                width: data.firstColumnWidth,
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context)
+                      .copyWith(scrollbars: false),
+                  child: ScrollShadow(
+                    size: data.scrollShadowSize,
+                    color: data.scrollShadowColor,
+                    fadeInCurve: data.scrollShadowFadeInCurve,
+                    fadeOutCurve: data.scrollShadowFadeOutCurve,
+                    duration: data.scrollShadowDuration,
+                    child: data.visibleScrollbar
+                        ? Scrollbar(
+                            controller: _firstColumnController,
+                            thumbVisibility: true,
+                            trackVisibility: data.trackVisibilityScrollbar,
+                            scrollbarOrientation: ScrollbarOrientation.left,
+                            child: child,
+                          )
+                        : child,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           Builder(
             builder: (context) {
@@ -148,14 +159,21 @@ class InternalTableState extends State<InternalTable> {
                   width: data.visibleHeadersWidth,
                   duration: data.duration,
                   curve: data.curve,
-                  child: ListView(
-                    controller: _restColumnsController,
-                    physics: const ClampingScrollPhysics(),
-                    children: data.allRows
-                        .map(
-                          (e) => _buildRowCells(data, e),
-                        )
-                        .toList(),
+                  child: ScrollShadow(
+                    size: data.scrollShadowSize,
+                    color: data.scrollShadowColor,
+                    fadeInCurve: data.scrollShadowFadeInCurve,
+                    fadeOutCurve: data.scrollShadowFadeOutCurve,
+                    duration: data.scrollShadowDuration,
+                    child: ListView(
+                      controller: _restColumnsController,
+                      physics: const ClampingScrollPhysics(),
+                      children: data.allRows
+                          .map(
+                            (e) => _buildRowCells(data, e),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ),
               );
@@ -170,28 +188,14 @@ class InternalTableState extends State<InternalTable> {
                     fadeInCurve: data.scrollShadowFadeInCurve,
                     fadeOutCurve: data.scrollShadowFadeOutCurve,
                     duration: data.scrollShadowDuration,
-                    child: ScrollShadow(
-                      size: data.scrollShadowSize,
-                      color: data.scrollShadowColor,
-                      fadeInCurve: data.scrollShadowFadeInCurve,
-                      fadeOutCurve: data.scrollShadowFadeOutCurve,
-                      duration: data.scrollShadowDuration,
-                      child: data.visibleScrollbar
-                          ? Scrollbar(
-                              controller: _horizontalBodyController,
-                              thumbVisibility: true,
-                              trackVisibility: data.trackVisibilityScrollbar,
-                              child: Scrollbar(
-                                controller: _restColumnsController,
-                                thumbVisibility: true,
-                                trackVisibility: data.trackVisibilityScrollbar,
-                                notificationPredicate: (notification) =>
-                                    notification.depth >= 0,
-                                child: child,
-                              ),
-                            )
-                          : child,
-                    ),
+                    child: data.visibleScrollbar
+                        ? Scrollbar(
+                            controller: _horizontalBodyController,
+                            thumbVisibility: true,
+                            trackVisibility: data.trackVisibilityScrollbar,
+                            child: child,
+                          )
+                        : child,
                   ),
                 ),
               );

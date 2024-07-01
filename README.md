@@ -91,7 +91,7 @@ Here is an example:
 ### ExpandableTable Properties
 * `firstHeaderCell`: Is the top left cell, i.e. the first header cell.
 * `headers`: contains the list of all column headers, each one of these can contain a list of further headers, this allows you to create nested and expandable columns.
-* `rows`: ontains the list of all the rows of the table, each of these can contain a list of further rows, this allows you to create nested and expandable rows.
+* `rows`: contains the list of all the rows of the table, each of these can contain a list of further rows, this allows you to create nested and expandable rows.
 * `headerHeight`: is the height of each column header, i.e. the first row.
 * `firstColumnWidth`: determines first Column width size.
 * `defaultsColumnWidth`: defines the default width of all columns, it is possible to redefine it for each individual column.
@@ -105,7 +105,7 @@ Here is an example:
 * `scrollShadowSize`: determines size of shadows.
 * `visibleScrollbar`: determines visibility of horizontal and vertical scrollbars.
 * `trackVisibilityScrollbar`: indicates that the scrollbar track should be visible.
-* `thumbVisibility`: indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
+* `thumbVisibilityScrollbar`: indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
 
 &nbsp;
 

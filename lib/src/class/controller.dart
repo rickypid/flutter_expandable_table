@@ -105,7 +105,7 @@ class ExpandableTableController extends ChangeNotifier {
 
   /// [trackVisibilityScrollbar] indicates that the scrollbar track should be visible.
   ///
-  /// Default: [null]
+  /// 'optional'
   bool? get trackVisibilityScrollbar => _trackVisibilityScrollbar;
 
   set trackVisibilityScrollbar(bool? value) {
@@ -117,7 +117,7 @@ class ExpandableTableController extends ChangeNotifier {
 
   /// [thumbVisibilityScrollbar] indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
   ///
-  /// Default: [null]
+  /// 'optional'
   bool? get thumbVisibilityScrollbar => _thumbVisibilityScrollbar;
 
   set thumbVisibilityScrollbar(bool? value) {

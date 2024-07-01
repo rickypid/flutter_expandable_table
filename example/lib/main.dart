@@ -133,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
       rows: rows,
       visibleScrollbar: true,
       trackVisibilityScrollbar: true,
+      thumbVisibilityScrollbar: true,
     );
   }
 
@@ -202,7 +203,6 @@ class _MyHomePageState extends State<MyHomePage> {
       firstColumnWidth: 250,
       scrollShadowColor: accentColor,
       visibleScrollbar: true,
-      trackVisibilityScrollbar: false,
     );
   }
 

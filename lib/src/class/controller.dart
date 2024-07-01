@@ -11,6 +11,7 @@ class ExpandableTableController extends ChangeNotifier {
   /// [firstHeaderCell] is the top left cell, i.e. the first header cell.
   /// `required`
   ExpandableTableCell get firstHeaderCell => _firstHeaderCell;
+
   set firstHeaderCell(ExpandableTableCell value) {
     _firstHeaderCell = value;
     notifyListeners();
@@ -100,15 +101,27 @@ class ExpandableTableController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _trackVisibilityScrollbar = false;
+  bool? _trackVisibilityScrollbar;
 
   /// [trackVisibilityScrollbar] indicates that the scrollbar track should be visible.
   ///
   /// Default: [false]
-  bool get trackVisibilityScrollbar => _trackVisibilityScrollbar;
+  bool? get trackVisibilityScrollbar => _trackVisibilityScrollbar;
 
-  set trackVisibilityScrollbar(bool value) {
+  set trackVisibilityScrollbar(bool? value) {
     _trackVisibilityScrollbar = value;
+    notifyListeners();
+  }
+
+  bool? _thumbVisibilityScrollbar;
+
+  /// [thumbVisibilityScrollbar] indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
+  ///
+  /// Default: [false]
+  bool? get thumbVisibilityScrollbar => _thumbVisibilityScrollbar;
+
+  set thumbVisibilityScrollbar(bool? value) {
+    _thumbVisibilityScrollbar = value;
     notifyListeners();
   }
 
@@ -160,7 +173,8 @@ class ExpandableTableController extends ChangeNotifier {
     required List<ExpandableTableHeader> headers,
     required List<ExpandableTableRow> rows,
     bool visibleScrollbar = false,
-    bool trackVisibilityScrollbar = false,
+    bool? trackVisibilityScrollbar,
+    bool? thumbVisibilityScrollbar,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
     this.scrollShadowDuration = const Duration(milliseconds: 500),
@@ -182,6 +196,7 @@ class ExpandableTableController extends ChangeNotifier {
     _rows = rows;
     _visibleScrollbar = visibleScrollbar;
     _trackVisibilityScrollbar = trackVisibilityScrollbar;
+    _thumbVisibilityScrollbar = thumbVisibilityScrollbar;
     _addHeadersListener();
     _addRowsListener();
   }

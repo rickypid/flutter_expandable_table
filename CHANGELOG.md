@@ -3,7 +3,7 @@
 ## [2.0.2] - 2024-03-29
 #### [@RichiB20](https://github.com/RichiB20)
 - Fixed vertical Scrollbar and added horizontal Scrollbar.
-- Added `trackVisibilityScrollbar` parameter.
+- Added `trackVisibilityScrollbar` and `thumbVisibility` parameter.
 - Fixed table size.
 
 ## [2.0.1] - 2023-09-04

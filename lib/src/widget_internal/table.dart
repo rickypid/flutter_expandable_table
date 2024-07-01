@@ -138,7 +138,7 @@ class InternalTableState extends State<InternalTable> {
                     child: data.visibleScrollbar
                         ? Scrollbar(
                             controller: _firstColumnController,
-                            thumbVisibility: true,
+                            thumbVisibility: data.thumbVisibilityScrollbar,
                             trackVisibility: data.trackVisibilityScrollbar,
                             scrollbarOrientation: ScrollbarOrientation.left,
                             child: child,
@@ -191,7 +191,7 @@ class InternalTableState extends State<InternalTable> {
                     child: data.visibleScrollbar
                         ? Scrollbar(
                             controller: _horizontalBodyController,
-                            thumbVisibility: true,
+                            thumbVisibility: data.thumbVisibilityScrollbar,
                             trackVisibility: data.trackVisibilityScrollbar,
                             child: child,
                           )

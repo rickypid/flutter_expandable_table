@@ -104,6 +104,8 @@ Here is an example:
 * `scrollShadowColor`: determines rendered color of shadows.
 * `scrollShadowSize`: determines size of shadows.
 * `visibleScrollbar`: determines visibility of horizontal and vertical scrollbars.
+* `trackVisibilityScrollbar`: indicates that the scrollbar track should be visible.
+* `thumbVisibility`: indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
 
 &nbsp;
 

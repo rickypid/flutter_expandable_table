@@ -89,7 +89,12 @@ class ExpandableTable extends StatefulWidget {
   /// [trackVisibilityScrollbar] indicates that the scrollbar track should be visible.
   ///
   /// Default: [false]
-  final bool trackVisibilityScrollbar;
+  final bool? trackVisibilityScrollbar;
+
+  /// [thumbVisibilityScrollbar] indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
+  ///
+  /// Default: [false]
+  final bool? thumbVisibilityScrollbar;
 
   /// [controller] specifies the external controller of the table, allows
   /// you to dynamically manage the data in the table externally.
@@ -128,7 +133,8 @@ class ExpandableTable extends StatefulWidget {
     this.scrollShadowColor = Colors.transparent,
     this.scrollShadowSize = 10,
     this.visibleScrollbar = false,
-    this.trackVisibilityScrollbar = false,
+    this.trackVisibilityScrollbar,
+    this.thumbVisibilityScrollbar,
   }) : assert((firstHeaderCell != null && rows != null && headers != null) ||
             controller != null);
 
@@ -168,6 +174,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
             curve: widget.curve,
             scrollShadowDuration: widget.scrollShadowDuration,
             scrollShadowFadeInCurve: widget.scrollShadowCurve,
+            scrollShadowFadeOutCurve: widget.scrollShadowCurve,
             scrollShadowColor: widget.scrollShadowColor,
             scrollShadowSize: widget.scrollShadowSize,
             firstColumnWidth: widget.firstColumnWidth,
@@ -176,6 +183,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
             headerHeight: widget.headerHeight,
             visibleScrollbar: widget.visibleScrollbar,
             trackVisibilityScrollbar: widget.trackVisibilityScrollbar,
+            thumbVisibilityScrollbar: widget.thumbVisibilityScrollbar,
           ),
           builder: (context, child) => const InternalTable(),
         );

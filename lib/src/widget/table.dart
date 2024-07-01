@@ -135,8 +135,10 @@ class ExpandableTable extends StatefulWidget {
     this.visibleScrollbar = false,
     this.trackVisibilityScrollbar,
     this.thumbVisibilityScrollbar,
-  }) : assert((firstHeaderCell != null && rows != null && headers != null) ||
-            controller != null);
+  }) : assert(((firstHeaderCell != null && rows != null && headers != null) ||
+                controller != null) &&
+            !(thumbVisibilityScrollbar == false &&
+                (trackVisibilityScrollbar ?? false)));
 
   @override
   State<ExpandableTable> createState() => _ExpandableTableState();

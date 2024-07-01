@@ -88,12 +88,12 @@ class ExpandableTable extends StatefulWidget {
 
   /// [trackVisibilityScrollbar] indicates that the scrollbar track should be visible.
   ///
-  /// Default: [false]
+  /// Default: [null]
   final bool? trackVisibilityScrollbar;
 
   /// [thumbVisibilityScrollbar] indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
   ///
-  /// Default: [false]
+  /// Default: [null]
   final bool? thumbVisibilityScrollbar;
 
   /// [controller] specifies the external controller of the table, allows

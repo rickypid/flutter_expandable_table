@@ -106,7 +106,7 @@ Here is an example:
 * `visibleScrollbar`: determines visibility of horizontal and vertical scrollbars.
 * `trackVisibilityScrollbar`: indicates that the scrollbar track should be visible.
 * `thumbVisibilityScrollbar`: indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
-* 
+
 &nbsp;
 
 ## 📚 My open source projects

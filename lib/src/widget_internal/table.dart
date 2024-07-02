@@ -256,53 +256,42 @@ class InternalTableState extends State<InternalTable> {
   Widget build(BuildContext context) {
     final ExpandableTableController data =
         context.watch<ExpandableTableController>();
-    return LayoutBuilder(
-      builder: (context, constraints) => SizedBox(
-        width: data.expanded
-            ? constraints.maxWidth
-            : _computeTableWidth(data: data) < constraints.maxWidth
-                ? _computeTableWidth(data: data)
-                : null,
-        height: data.expanded
-            ? constraints.maxHeight
-            : _computeTableHeight(data: data) < constraints.maxHeight
-                ? _computeTableHeight(data: data)
-                : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: data.headerHeight,
-              child: Row(
-                children: [
-                  ExpandableTableCellWidget(
-                    height: data.headerHeight,
-                    width: data.firstColumnWidth,
-                    builder: data.firstHeaderCell.build,
-                  ),
-                  Expanded(
-                    child: ScrollShadow(
-                      size: data.scrollShadowSize,
-                      color: data.scrollShadowColor,
-                      fadeInCurve: data.scrollShadowFadeInCurve,
-                      fadeOutCurve: data.scrollShadowFadeOutCurve,
-                      duration: data.scrollShadowDuration,
-                      child: ListView(
-                        controller: _headController,
-                        physics: const ClampingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        children: _buildHeaderCells(data),
-                      ),
+    return SizedBox(
+      width: data.expanded ? null : _computeTableWidth(data: data),
+      height: data.expanded ? null : _computeTableHeight(data: data),
+      child: Column(
+        children: [
+          SizedBox(
+            height: data.headerHeight,
+            child: Row(
+              children: [
+                ExpandableTableCellWidget(
+                  height: data.headerHeight,
+                  width: data.firstColumnWidth,
+                  builder: data.firstHeaderCell.build,
+                ),
+                Expanded(
+                  child: ScrollShadow(
+                    size: data.scrollShadowSize,
+                    color: data.scrollShadowColor,
+                    fadeInCurve: data.scrollShadowFadeInCurve,
+                    fadeOutCurve: data.scrollShadowFadeOutCurve,
+                    duration: data.scrollShadowDuration,
+                    child: ListView(
+                      controller: _headController,
+                      physics: const ClampingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      children: _buildHeaderCells(data),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Expanded(
-              child: _buildBody(data),
-            ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: _buildBody(data),
+          ),
+        ],
       ),
     );
   }

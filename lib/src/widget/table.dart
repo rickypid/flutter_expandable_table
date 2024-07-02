@@ -96,6 +96,11 @@ class ExpandableTable extends StatefulWidget {
   /// 'optional'
   final bool? thumbVisibilityScrollbar;
 
+  /// [expanded] indicates that the table expands so that it fills the available space along the horizontal and vertical axes.
+  ///
+  /// Default: [true]
+  final bool expanded;
+
   /// [controller] specifies the external controller of the table, allows
   /// you to dynamically manage the data in the table externally.
   /// Do not use if [firstHeaderCell], [headers] and [rows] are passed
@@ -135,6 +140,7 @@ class ExpandableTable extends StatefulWidget {
     this.visibleScrollbar = false,
     this.trackVisibilityScrollbar,
     this.thumbVisibilityScrollbar,
+    this.expanded = true,
   }) : assert(((firstHeaderCell != null && rows != null && headers != null) ||
                 controller != null) &&
             !(thumbVisibilityScrollbar == false &&
@@ -186,6 +192,7 @@ class _ExpandableTableState extends State<ExpandableTable> {
             visibleScrollbar: widget.visibleScrollbar,
             trackVisibilityScrollbar: widget.trackVisibilityScrollbar,
             thumbVisibilityScrollbar: widget.thumbVisibilityScrollbar,
+            expanded: widget.expanded,
           ),
           builder: (context, child) => const InternalTable(),
         );

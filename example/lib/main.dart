@@ -203,6 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
       firstColumnWidth: 250,
       scrollShadowColor: accentColor,
       visibleScrollbar: true,
+      expanded: false,
     );
   }
 

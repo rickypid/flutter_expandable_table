@@ -125,6 +125,18 @@ class ExpandableTableController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _expanded = true;
+
+  /// [expanded] indicates that the table expands so that it fills the available space along the horizontal and vertical axes.
+  ///
+  /// Default: [true]
+  bool get expanded => _expanded;
+
+  set expanded(bool value) {
+    _expanded = value;
+    notifyListeners();
+  }
+
   /// [duration] determines duration rendered animation of Rows/Columns expansion.
   ///
   /// Default: [500ms]
@@ -175,6 +187,7 @@ class ExpandableTableController extends ChangeNotifier {
     bool visibleScrollbar = false,
     bool? trackVisibilityScrollbar,
     bool? thumbVisibilityScrollbar,
+    bool expanded = true,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
     this.scrollShadowDuration = const Duration(milliseconds: 500),
@@ -197,6 +210,7 @@ class ExpandableTableController extends ChangeNotifier {
     _visibleScrollbar = visibleScrollbar;
     _trackVisibilityScrollbar = trackVisibilityScrollbar;
     _thumbVisibilityScrollbar = thumbVisibilityScrollbar;
+    _expanded = expanded;
     _addHeadersListener();
     _addRowsListener();
   }

@@ -258,12 +258,16 @@ class InternalTableState extends State<InternalTable> {
         context.watch<ExpandableTableController>();
     return LayoutBuilder(
       builder: (context, constraints) => SizedBox(
-        width: _computeTableWidth(data: data) < constraints.maxWidth
-            ? _computeTableWidth(data: data)
-            : null,
-        height: _computeTableHeight(data: data) < constraints.maxHeight
-            ? _computeTableHeight(data: data)
-            : null,
+        width: data.expanded
+            ? constraints.maxWidth
+            : _computeTableWidth(data: data) < constraints.maxWidth
+                ? _computeTableWidth(data: data)
+                : null,
+        height: data.expanded
+            ? constraints.maxHeight
+            : _computeTableHeight(data: data) < constraints.maxHeight
+                ? _computeTableHeight(data: data)
+                : null,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

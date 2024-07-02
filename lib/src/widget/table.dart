@@ -96,7 +96,7 @@ class ExpandableTable extends StatefulWidget {
   /// 'optional'
   final bool? thumbVisibilityScrollbar;
 
-  /// [expanded] indicates that the table expands so that it fills the available space along the horizontal and vertical axes.
+  /// [expanded] indicates that the table expands, so it fills the available space along the horizontal and vertical axes.
   ///
   /// Default: [true]
   final bool expanded;

@@ -127,7 +127,7 @@ class ExpandableTableController extends ChangeNotifier {
 
   bool _expanded = true;
 
-  /// [expanded] indicates that the table expands so that it fills the available space along the horizontal and vertical axes.
+  /// [expanded] indicates that the table expands, so it fills the available space along the horizontal and vertical axes.
   ///
   /// Default: [true]
   bool get expanded => _expanded;

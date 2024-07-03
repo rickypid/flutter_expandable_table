@@ -11,7 +11,7 @@
 
 `ExpandableTable` is a widget for Flutter that create a Table with header and first column fixed. You can create a nested Rows/Columns grouped in expandable Row/Column
 
-| ![Image](https://github.com/rickypid/flutter_expandable_table/blob/master/doc/.media/example.gif?raw=true) |
+| ![Image](https://github.com/rickypid/flutter_expandable_table/blob/master/doc/media/example.gif?raw=true) |
 | :------------: |
 | **ExpandableTable** |
 

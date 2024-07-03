@@ -24,4 +24,4 @@ dev_dependencies:
 flutter:
 screenshots:
   - description: 'Expandable Table - screenshot 1'
-    path: doc/.media/screenshot.png
+    path: doc/media/screenshot.png

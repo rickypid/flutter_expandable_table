@@ -11,7 +11,7 @@
 
 `ExpandableTable` is a widget for Flutter that create a Table with header and first column fixed. You can create a nested Rows/Columns grouped in expandable Row/Column
 
-| ![Image](https://github.com/rickypid/flutter_expandable_table/blob/master/doc/.media/example.gif?raw=true) |
+| ![Image](https://github.com/rickypid/flutter_expandable_table/blob/master/doc/media/example.gif?raw=true) |
 | :------------: |
 | **ExpandableTable** |
 
@@ -44,13 +44,13 @@ dependencies:
 *Complete example [available here](https://github.com/rickypid/flutter_expandable_table/blob/master/example/lib/main.dart).*
 
 ```dart
-    return ExpandableTable(
-      firstHeaderCell: ExpandableTableCell(
-        child: Text('Simple\nTable'),
-      ),
-      headers: headers,
-      rows: rows,
-    );
+     return ExpandableTable(
+firstHeaderCell: ExpandableTableCell(
+child: Text('Simple\nTable'),
+),
+headers: headers,
+rows: rows,
+);
 ```
 
 ### Use with the controller
@@ -61,30 +61,30 @@ Here is an example:
 
 ```dart
     //... Inside Widget State
-    late ExpandableTableController controller;
-    //....
-    @override
-    void initState() {
-      controller = ExpandableTableController(
-        firstHeaderCell: ExpandableTableCell(child: Container()),
-        headers: [],
-        rows: [],
-        headerHeight: 263,
-        defaultsColumnWidth: 200,
-        firstColumnWidth: 300,
-        scrollShadowColor: AppColors.black,
-      );
-      super.initState();
-    }
-    void _onEvent(){    
-      controller.rows.add(...your code...);
-    }
-    @override
-    Widget build(BuildContext context) {
-      return ExpandableTable(
-        controller: controller,
-      );
-    }
+late ExpandableTableController controller;
+//....
+@override
+void initState() {
+  controller = ExpandableTableController(
+    firstHeaderCell: ExpandableTableCell(child: Container()),
+    headers: [],
+    rows: [],
+    headerHeight: 263,
+    defaultsColumnWidth: 200,
+    firstColumnWidth: 300,
+    scrollShadowColor: AppColors.black,
+  );
+  super.initState();
+}
+void _onEvent(){
+  controller.rows.add(...your code...);
+}
+@override
+Widget build(BuildContext context) {
+  return ExpandableTable(
+    controller: controller,
+  );
+}
 //....
 ```
 

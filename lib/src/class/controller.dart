@@ -11,6 +11,7 @@ class ExpandableTableController extends ChangeNotifier {
   /// [firstHeaderCell] is the top left cell, i.e. the first header cell.
   /// `required`
   ExpandableTableCell get firstHeaderCell => _firstHeaderCell;
+
   set firstHeaderCell(ExpandableTableCell value) {
     _firstHeaderCell = value;
     notifyListeners();
@@ -90,13 +91,49 @@ class ExpandableTableController extends ChangeNotifier {
 
   bool _visibleScrollbar = false;
 
-  /// [visibleScrollbar] determines visibility of scrollbar.
+  /// [visibleScrollbar] determines visibility of horizontal and vertical scrollbars.
   ///
   /// Default: [false]
   bool get visibleScrollbar => _visibleScrollbar;
 
   set visibleScrollbar(bool value) {
     _visibleScrollbar = value;
+    notifyListeners();
+  }
+
+  bool? _trackVisibilityScrollbar;
+
+  /// [trackVisibilityScrollbar] indicates that the scrollbar track should be visible.
+  ///
+  /// 'optional'
+  bool? get trackVisibilityScrollbar => _trackVisibilityScrollbar;
+
+  set trackVisibilityScrollbar(bool? value) {
+    _trackVisibilityScrollbar = value;
+    notifyListeners();
+  }
+
+  bool? _thumbVisibilityScrollbar;
+
+  /// [thumbVisibilityScrollbar] indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
+  ///
+  /// 'optional'
+  bool? get thumbVisibilityScrollbar => _thumbVisibilityScrollbar;
+
+  set thumbVisibilityScrollbar(bool? value) {
+    _thumbVisibilityScrollbar = value;
+    notifyListeners();
+  }
+
+  bool _expanded = true;
+
+  /// [expanded] indicates that the table expands, so it fills the available space along the horizontal and vertical axes.
+  ///
+  /// Default: [true]
+  bool get expanded => _expanded;
+
+  set expanded(bool value) {
+    _expanded = value;
     notifyListeners();
   }
 
@@ -147,6 +184,10 @@ class ExpandableTableController extends ChangeNotifier {
     required ExpandableTableCell firstHeaderCell,
     required List<ExpandableTableHeader> headers,
     required List<ExpandableTableRow> rows,
+    bool visibleScrollbar = false,
+    bool? trackVisibilityScrollbar,
+    bool? thumbVisibilityScrollbar,
+    bool expanded = true,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
     this.scrollShadowDuration = const Duration(milliseconds: 500),
@@ -166,6 +207,10 @@ class ExpandableTableController extends ChangeNotifier {
     _defaultsRowHeight = defaultsRowHeight;
     _headers = headers;
     _rows = rows;
+    _visibleScrollbar = visibleScrollbar;
+    _trackVisibilityScrollbar = trackVisibilityScrollbar;
+    _thumbVisibilityScrollbar = thumbVisibilityScrollbar;
+    _expanded = expanded;
     _addHeadersListener();
     _addRowsListener();
   }
@@ -203,7 +248,7 @@ class ExpandableTableController extends ChangeNotifier {
     super.dispose();
   }
 
-  _listener() => notifyListeners();
+  void _listener() => notifyListeners();
 
   /// [allHeaders] returns all table headers, visible and not, including nested ones.
   List<ExpandableTableHeader> get allHeaders => _getAllHeaders(headers);
@@ -219,7 +264,7 @@ class ExpandableTableController extends ChangeNotifier {
 
   List<ExpandableTableHeader> _getAllHeaders(
       List<ExpandableTableHeader> headers) {
-    List<ExpandableTableHeader> cells = [];
+    final List<ExpandableTableHeader> cells = [];
     for (var header in headers) {
       cells.add(header);
       if (header.children != null) {
@@ -242,7 +287,7 @@ class ExpandableTableController extends ChangeNotifier {
       .fold(0, (a, b) => a + b);
 
   List<ExpandableTableRow> _getAllRows(List<ExpandableTableRow> rows) {
-    List<ExpandableTableRow> rowsTmp = [];
+    final List<ExpandableTableRow> rowsTmp = [];
     for (var row in rows) {
       rowsTmp.add(row);
       if (row.children != null) {

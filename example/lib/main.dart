@@ -4,109 +4,102 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
-const Color primaryColor = Color(0xFF1e2f36); //corner
-const Color accentColor = Color(0xFF0d2026); //background
-const TextStyle textStyle = TextStyle(color: Colors.white);
-const TextStyle textStyleSubItems = TextStyle(color: Colors.grey);
+const Color _primaryColor = Color(0xFF1e2f36); //corner
+const Color _accentColor = Color(0xFF0d2026); //background
+const TextStyle _textStyle = TextStyle(color: Colors.white);
+// const TextStyle _textStyleSubItems = TextStyle(color: Colors.grey);
 
-void main() => runApp(const MyApp());
+void main() => runApp(const _MyApp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ExpandableTable Example',
-      theme: ThemeData(primarySwatch: Colors.grey),
-      home: const MyHomePage(),
-      scrollBehavior: AppCustomScrollBehavior(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class _MyApp extends StatelessWidget {
+  const _MyApp();
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'ExpandableTable Example',
+        theme: ThemeData(primarySwatch: Colors.grey),
+        home: const _MyHomePage(),
+        scrollBehavior: _AppCustomScrollBehavior(),
+      );
 }
 
-class DefaultCellCard extends StatelessWidget {
+class _MyHomePage extends StatefulWidget {
+  const _MyHomePage();
+
+  @override
+  State<_MyHomePage> createState() => _MyHomePageState();
+}
+
+class _DefaultCellCard extends StatelessWidget {
   final Widget child;
 
-  const DefaultCellCard({
-    Key? key,
+  const _DefaultCellCard({
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: primaryColor,
-      margin: const EdgeInsets.all(1),
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        color: _primaryColor,
+        margin: const EdgeInsets.all(1),
+        child: child,
+      );
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  _buildCell(String content, {CellBuilder? builder}) {
-    return ExpandableTableCell(
-      child: builder != null
-          ? null
-          : DefaultCellCard(
-              child: Center(
-                child: Text(
-                  content,
-                  style: textStyle,
+class _MyHomePageState extends State<_MyHomePage> {
+  ExpandableTableCell _buildCell(String content, {CellBuilder? builder}) =>
+      ExpandableTableCell(
+        child: builder != null
+            ? null
+            : _DefaultCellCard(
+                child: Center(
+                  child: Text(
+                    content,
+                    style: _textStyle,
+                  ),
                 ),
               ),
-            ),
-      builder: builder,
-    );
-  }
+        builder: builder,
+      );
 
-  ExpandableTableCell _buildFirstRowCell() {
-    return ExpandableTableCell(
-      builder: (context, details) => DefaultCellCard(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 24 * details.row!.address.length.toDouble(),
-                child: details.row?.children != null
-                    ? Align(
-                        alignment: Alignment.centerRight,
-                        child: AnimatedRotation(
-                          duration: const Duration(milliseconds: 500),
-                          turns:
-                              details.row?.childrenExpanded == true ? 0.25 : 0,
-                          child: const Icon(
-                            Icons.keyboard_arrow_right,
-                            color: Colors.white,
+  ExpandableTableCell _buildFirstRowCell() => ExpandableTableCell(
+        builder: (context, details) => _DefaultCellCard(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 24 * details.row!.address.length.toDouble(),
+                  child: details.row?.children != null
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: AnimatedRotation(
+                            duration: const Duration(milliseconds: 500),
+                            turns: details.row?.childrenExpanded == true
+                                ? 0.25
+                                : 0,
+                            child: const Icon(
+                              Icons.keyboard_arrow_right,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      )
-                    : null,
-              ),
-              Text(
-                '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => 'Sub ').join() : ''}Row ${details.row!.address.last}',
-                style: textStyle,
-              ),
-            ],
+                        )
+                      : null,
+                ),
+                Text(
+                  '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => 'Sub ').join() : ''}Row ${details.row!.address.last}',
+                  style: _textStyle,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   ExpandableTable _buildSimpleTable() {
     const int columnsCount = 20;
     const int rowsCount = 20;
     //Creation header
-    List<ExpandableTableHeader> headers = List.generate(
+    final List<ExpandableTableHeader> headers = List.generate(
       columnsCount - 1,
       (index) => ExpandableTableHeader(
         width: index % 2 == 0 ? 200 : 150,
@@ -114,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
     //Creation rows
-    List<ExpandableTableRow> rows = List.generate(
+    final List<ExpandableTableRow> rows = List.generate(
       rowsCount,
       (rowIndex) => ExpandableTableRow(
         height: rowIndex % 2 == 0 ? 50 : 70,
@@ -129,8 +122,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return ExpandableTable(
       firstHeaderCell: _buildCell('Simple\nTable'),
       headers: headers,
-      scrollShadowColor: accentColor,
+      scrollShadowColor: _accentColor,
       rows: rows,
+      visibleScrollbar: true,
+      trackVisibilityScrollbar: true,
+      thumbVisibilityScrollbar: true,
     );
   }
 
@@ -141,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const int totalColumns = columnsCount + subColumnsCount;
 
   List<ExpandableTableRow> _generateRows(int quantity, {int depth = 0}) {
-    bool generateLegendRow = (depth == 0 || depth == 2);
+    final bool generateLegendRow = (depth == 0 || depth == 2);
     return List.generate(
       quantity,
       (rowIndex) => ExpandableTableRow(
@@ -156,14 +152,14 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             : null,
         legend: generateLegendRow && (rowIndex == 3 || rowIndex == 2)
-            ? const DefaultCellCard(
+            ? const _DefaultCellCard(
                 child: Align(
                   alignment: FractionalOffset.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.only(left: 24.0),
                     child: Text(
                       'This is row legend',
-                      style: textStyle,
+                      style: _textStyle,
                     ),
                   ),
                 ),
@@ -175,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ExpandableTable _buildExpandableTable() {
     //Creation header
-    List<ExpandableTableHeader> subHeader = List.generate(
+    final List<ExpandableTableHeader> subHeader = List.generate(
       subColumnsCount,
       (index) => ExpandableTableHeader(
         cell: _buildCell('Sub Column $index'),
@@ -183,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     //Creation header
-    List<ExpandableTableHeader> headers = List.generate(
+    final List<ExpandableTableHeader> headers = List.generate(
       columnsCount,
       (index) => ExpandableTableHeader(
           cell: _buildCell(
@@ -198,42 +194,43 @@ class _MyHomePageState extends State<MyHomePage> {
       defaultsRowHeight: 60,
       defaultsColumnWidth: 150,
       firstColumnWidth: 250,
-      scrollShadowColor: accentColor,
+      scrollShadowColor: _accentColor,
+      visibleScrollbar: true,
+      expanded: false,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-            '   Simple Table                    |                    Expandable Table'),
-        centerTitle: true,
-      ),
-      body: Container(
-        color: accentColor,
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: _buildSimpleTable(),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: _buildExpandableTable(),
-              ),
-            ),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text(
+              '   Simple Table                    |                    Expandable Table'),
+          centerTitle: true,
         ),
-      ),
-    );
-  }
+        body: Container(
+          color: _accentColor,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: _buildSimpleTable(),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: _buildExpandableTable(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
-class AppCustomScrollBehavior extends MaterialScrollBehavior {
+class _AppCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
         PointerDeviceKind.touch,

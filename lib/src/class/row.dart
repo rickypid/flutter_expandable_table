@@ -124,7 +124,7 @@ class ExpandableTableRow extends ChangeNotifier {
     super.dispose();
   }
 
-  _listener() => notifyListeners();
+  void _listener() => notifyListeners();
 
   /// [rowsCount] returns the number of rows, this one and
   /// all those nested within it.

@@ -1,6 +1,6 @@
 name: flutter_expandable_table_example
 description: A Flutter widget for create an expandable table with header and first column fixed.
-version: 2.0.1
+version: 2.1.0
 
 environment:
   sdk: ">=2.18.0 <4.0.0"
@@ -10,11 +10,12 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.1
-  import_sorter: ^4.6.0
   flutter_expandable_table:
     path: ../
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+  import_sorter: ^4.6.0
+
 flutter:
   uses-material-design: true

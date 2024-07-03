@@ -18,18 +18,16 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ExpandableTable Example',
-      theme: ThemeData(primarySwatch: Colors.grey),
-      home: const MyHomePage(),
-      scrollBehavior: AppCustomScrollBehavior(),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'ExpandableTable Example',
+        theme: ThemeData(primarySwatch: Colors.grey),
+        home: const MyHomePage(),
+        scrollBehavior: AppCustomScrollBehavior(),
+      );
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -39,77 +37,73 @@ class DefaultCellCard extends StatelessWidget {
   final Widget child;
 
   const DefaultCellCard({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: primaryColor,
-      margin: const EdgeInsets.all(1),
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        color: primaryColor,
+        margin: const EdgeInsets.all(1),
+        child: child,
+      );
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  _buildCell(String content, {CellBuilder? builder}) {
-    return ExpandableTableCell(
-      child: builder != null
-          ? null
-          : DefaultCellCard(
-              child: Center(
-                child: Text(
-                  content,
-                  style: textStyle,
+  ExpandableTableCell _buildCell(String content, {CellBuilder? builder}) =>
+      ExpandableTableCell(
+        child: builder != null
+            ? null
+            : DefaultCellCard(
+                child: Center(
+                  child: Text(
+                    content,
+                    style: textStyle,
+                  ),
                 ),
               ),
-            ),
-      builder: builder,
-    );
-  }
+        builder: builder,
+      );
 
-  ExpandableTableCell _buildFirstRowCell() {
-    return ExpandableTableCell(
-      builder: (context, details) => DefaultCellCard(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 24 * details.row!.address.length.toDouble(),
-                child: details.row?.children != null
-                    ? Align(
-                        alignment: Alignment.centerRight,
-                        child: AnimatedRotation(
-                          duration: const Duration(milliseconds: 500),
-                          turns:
-                              details.row?.childrenExpanded == true ? 0.25 : 0,
-                          child: const Icon(
-                            Icons.keyboard_arrow_right,
-                            color: Colors.white,
+  ExpandableTableCell _buildFirstRowCell() => ExpandableTableCell(
+        builder: (context, details) => DefaultCellCard(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 24 * details.row!.address.length.toDouble(),
+                  child: details.row?.children != null
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: AnimatedRotation(
+                            duration: const Duration(milliseconds: 500),
+                            turns: details.row?.childrenExpanded == true
+                                ? 0.25
+                                : 0,
+                            child: const Icon(
+                              Icons.keyboard_arrow_right,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      )
-                    : null,
-              ),
-              Text(
-                '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => '&Sub ').join() : ''}&Row ${details.row!.address.last}',
-                style: textStyle,
-              ),
-            ],
+                        )
+                      : null,
+                ),
+                Text(
+                  '${details.row!.address.length > 1 ? details.row!.address.skip(1).map((e) => '&Sub ').join() : ''}&Row ${details.row!.address.last}',
+                  style: textStyle,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   ExpandableTable _buildSimpleTable() {
     const int columnsCount = 20;
     const int rowsCount = 20;
     //Creation header
-    List<ExpandableTableHeader> headers = List.generate(
+    final List<ExpandableTableHeader> headers = List.generate(
       columnsCount - 1,
       (index) => ExpandableTableHeader(
         width: index % 2 == 0 ? 200 : 150,
@@ -117,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
     //Creation rows
-    List<ExpandableTableRow> rows = List.generate(
+    final List<ExpandableTableRow> rows = List.generate(
       rowsCount,
       (rowIndex) => ExpandableTableRow(
         height: rowIndex % 2 == 0 ? 50 : 70,
@@ -144,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const int totalColumns = columnsCount + subColumnsCount;
 
   List<ExpandableTableRow> _generateRows(int quantity, {int depth = 0}) {
-    bool generateLegendRow = (depth == 0 || depth == 2);
+    final bool generateLegendRow = (depth == 0 || depth == 2);
     return List.generate(
       quantity,
       (rowIndex) => ExpandableTableRow(
@@ -178,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ExpandableTable _buildExpandableTable() {
     //Creation header
-    List<ExpandableTableHeader> subHeader = List.generate(
+    final List<ExpandableTableHeader> subHeader = List.generate(
       subColumnsCount,
       (index) => ExpandableTableHeader(
         cell: _buildCell('&Sub Column $index'),
@@ -186,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     //Creation header
-    List<ExpandableTableHeader> headers = List.generate(
+    final List<ExpandableTableHeader> headers = List.generate(
       columnsCount,
       (index) => ExpandableTableHeader(
           cell: _buildCell(
@@ -206,34 +200,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-            '   Simple Table                    |                    Expandable Table'),
-        centerTitle: true,
-      ),
-      body: Container(
-        color: accentColor,
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: _buildSimpleTable(),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: _buildExpandableTable(),
-              ),
-            ),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text(
+              '   Simple Table                    |                    Expandable Table'),
+          centerTitle: true,
         ),
-      ),
-    );
-  }
+        body: Container(
+          color: accentColor,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: _buildSimpleTable(),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: _buildExpandableTable(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class AppCustomScrollBehavior extends MaterialScrollBehavior {

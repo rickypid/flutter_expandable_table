@@ -109,7 +109,7 @@ class ExpandableTableHeader extends ChangeNotifier {
     super.dispose();
   }
 
-  _listener() => notifyListeners();
+  void _listener() => notifyListeners();
 
   /// [columnsCount] returns the number of columns, this one and
   /// all those nested within it.

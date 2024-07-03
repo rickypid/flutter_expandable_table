@@ -81,10 +81,25 @@ class ExpandableTable extends StatefulWidget {
   /// Default: [10]
   final double scrollShadowSize;
 
-  /// [visibleScrollbar] determines visibility of scrollbar.
+  /// [visibleScrollbar] determines visibility of horizontal and vertical scrollbars.
   ///
   /// Default: [false]
   final bool visibleScrollbar;
+
+  /// [trackVisibilityScrollbar] indicates that the scrollbar track should be visible.
+  ///
+  /// 'optional'
+  final bool? trackVisibilityScrollbar;
+
+  /// [thumbVisibilityScrollbar] indicates that the scrollbar thumb should be visible, even when a scroll is not underway.
+  ///
+  /// 'optional'
+  final bool? thumbVisibilityScrollbar;
+
+  /// [expanded] indicates that the table expands, so it fills the available space along the horizontal and vertical axes.
+  ///
+  /// Default: [true]
+  final bool expanded;
 
   /// [controller] specifies the external controller of the table, allows
   /// you to dynamically manage the data in the table externally.
@@ -107,7 +122,7 @@ class ExpandableTable extends StatefulWidget {
   ///     );
   /// ```
   const ExpandableTable({
-    Key? key,
+    super.key,
     this.firstHeaderCell,
     this.headers,
     this.rows,
@@ -123,9 +138,13 @@ class ExpandableTable extends StatefulWidget {
     this.scrollShadowColor = Colors.transparent,
     this.scrollShadowSize = 10,
     this.visibleScrollbar = false,
-  })  : assert((firstHeaderCell != null && rows != null && headers != null) ||
-            controller != null),
-        super(key: key);
+    this.trackVisibilityScrollbar,
+    this.thumbVisibilityScrollbar,
+    this.expanded = true,
+  }) : assert(((firstHeaderCell != null && rows != null && headers != null) ||
+                controller != null) &&
+            !(thumbVisibilityScrollbar == false &&
+                (trackVisibilityScrollbar ?? false)));
 
   @override
   State<ExpandableTable> createState() => _ExpandableTableState();
@@ -135,13 +154,13 @@ class _ExpandableTableState extends State<ExpandableTable> {
   @override
   void initState() {
     if (widget.controller == null) {
-      int totalColumns =
+      final int totalColumns =
           widget.headers!.map((e) => e.columnsCount).fold(0, (a, b) => a + b);
       for (int i = 0; i < widget.rows!.length; i++) {
         if (widget.rows![i].cellsCount != null &&
             widget.rows![i].cellsCount != totalColumns) {
           throw FormatException(
-              "Row $i cells count ${widget.rows![i].cellsCount} <> $totalColumns header cell count.");
+              'Row $i cells count ${widget.rows![i].cellsCount} <> $totalColumns header cell count.');
         }
       }
     }
@@ -149,29 +168,32 @@ class _ExpandableTableState extends State<ExpandableTable> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return widget.controller != null
-        ? ChangeNotifierProvider<ExpandableTableController>.value(
-            value: widget.controller!,
-            builder: (context, child) => const InternalTable(),
-          )
-        : ChangeNotifierProvider<ExpandableTableController>(
-            create: (context) => ExpandableTableController(
-              firstHeaderCell: widget.firstHeaderCell!,
-              headers: widget.headers!,
-              rows: widget.rows!,
-              duration: widget.duration,
-              curve: widget.curve,
-              scrollShadowDuration: widget.scrollShadowDuration,
-              scrollShadowFadeInCurve: widget.scrollShadowCurve,
-              scrollShadowColor: widget.scrollShadowColor,
-              scrollShadowSize: widget.scrollShadowSize,
-              firstColumnWidth: widget.firstColumnWidth,
-              defaultsColumnWidth: widget.defaultsColumnWidth,
-              defaultsRowHeight: widget.defaultsRowHeight,
-              headerHeight: widget.headerHeight,
-            ),
-            builder: (context, child) => const InternalTable(),
-          );
-  }
+  Widget build(BuildContext context) => widget.controller != null
+      ? ChangeNotifierProvider<ExpandableTableController>.value(
+          value: widget.controller!,
+          builder: (context, child) => const InternalTable(),
+        )
+      : ChangeNotifierProvider<ExpandableTableController>(
+          create: (context) => ExpandableTableController(
+            firstHeaderCell: widget.firstHeaderCell!,
+            headers: widget.headers!,
+            rows: widget.rows!,
+            duration: widget.duration,
+            curve: widget.curve,
+            scrollShadowDuration: widget.scrollShadowDuration,
+            scrollShadowFadeInCurve: widget.scrollShadowCurve,
+            scrollShadowFadeOutCurve: widget.scrollShadowCurve,
+            scrollShadowColor: widget.scrollShadowColor,
+            scrollShadowSize: widget.scrollShadowSize,
+            firstColumnWidth: widget.firstColumnWidth,
+            defaultsColumnWidth: widget.defaultsColumnWidth,
+            defaultsRowHeight: widget.defaultsRowHeight,
+            headerHeight: widget.headerHeight,
+            visibleScrollbar: widget.visibleScrollbar,
+            trackVisibilityScrollbar: widget.trackVisibilityScrollbar,
+            thumbVisibilityScrollbar: widget.thumbVisibilityScrollbar,
+            expanded: widget.expanded,
+          ),
+          builder: (context, child) => const InternalTable(),
+        );
 }

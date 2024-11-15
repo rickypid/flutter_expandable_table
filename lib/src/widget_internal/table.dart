@@ -98,31 +98,28 @@ class InternalTableState extends State<InternalTable> {
         children: [
           Builder(
             builder: (context) {
-              final Widget child = ListView(
+              final Widget child = ListView.builder(
                 controller: _firstColumnController,
                 physics: const ClampingScrollPhysics(),
-                children: data.allRows
-                    .map(
-                      (e) => ChangeNotifierProvider<ExpandableTableRow>.value(
-                        value: e,
-                        builder: (context, child) => ExpandableTableCellWidget(
-                          row: context.watch<ExpandableTableRow>(),
-                          height: context.watch<ExpandableTableRow>().height ??
-                              data.defaultsRowHeight,
-                          width: data.firstColumnWidth,
-                          builder: context
-                              .watch<ExpandableTableRow>()
-                              .firstCell
-                              .build,
-                          onTap: () {
-                            if (!e.disableDefaultOnTapExpansion) {
-                              e.toggleExpand();
-                            }
-                          },
-                        ),
-                      ),
-                    )
-                    .toList(),
+                itemCount: data.allRows.length,
+                itemBuilder: (context, index) => ChangeNotifierProvider<ExpandableTableRow>.value(
+                  value: data.allRows[index],
+                  builder: (context, child) => ExpandableTableCellWidget(
+                    row: context.watch<ExpandableTableRow>(),
+                    height: context.watch<ExpandableTableRow>().height ??
+                        data.defaultsRowHeight,
+                    width: data.firstColumnWidth,
+                    builder: context
+                        .watch<ExpandableTableRow>()
+                        .firstCell
+                        .build,
+                    onTap: () {
+                      if (!data.allRows[index].disableDefaultOnTapExpansion) {
+                        data.allRows[index].toggleExpand();
+                      }
+                    },
+                  ),
+                ),
               );
               return SizedBox(
                 width: data.firstColumnWidth,
@@ -165,14 +162,11 @@ class InternalTableState extends State<InternalTable> {
                     fadeInCurve: data.scrollShadowFadeInCurve,
                     fadeOutCurve: data.scrollShadowFadeOutCurve,
                     duration: data.scrollShadowDuration,
-                    child: ListView(
+                    child: ListView.builder(
                       controller: _restColumnsController,
                       physics: const ClampingScrollPhysics(),
-                      children: data.allRows
-                          .map(
-                            (e) => _buildRowCells(data, e),
-                          )
-                          .toList(),
+                      itemCount: data.allRows.length,
+                      itemBuilder: (context, index) => _buildRowCells(data, data.allRows[index]),
                     ),
                   ),
                 ),
@@ -277,11 +271,17 @@ class InternalTableState extends State<InternalTable> {
                     fadeInCurve: data.scrollShadowFadeInCurve,
                     fadeOutCurve: data.scrollShadowFadeOutCurve,
                     duration: data.scrollShadowDuration,
-                    child: ListView(
-                      controller: _headController,
-                      physics: const ClampingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      children: _buildHeaderCells(data),
+                    child: Builder(
+                      builder: (context) {
+                        final headers =  _buildHeaderCells(data);
+                        return ListView.builder(
+                          controller: _headController,
+                          physics: const ClampingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: headers.length,
+                          itemBuilder: (context, index) => headers[index],
+                        );
+                      }
                     ),
                   ),
                 ),

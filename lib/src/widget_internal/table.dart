@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_table/src/widget_internal/animated_container.dart';
 
 // Package imports:
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
@@ -102,17 +103,16 @@ class InternalTableState extends State<InternalTable> {
                 controller: _firstColumnController,
                 physics: const ClampingScrollPhysics(),
                 itemCount: data.allRows.length,
-                itemBuilder: (context, index) => ChangeNotifierProvider<ExpandableTableRow>.value(
+                itemBuilder: (context, index) =>
+                    ChangeNotifierProvider<ExpandableTableRow>.value(
                   value: data.allRows[index],
                   builder: (context, child) => ExpandableTableCellWidget(
                     row: context.watch<ExpandableTableRow>(),
                     height: context.watch<ExpandableTableRow>().height ??
                         data.defaultsRowHeight,
                     width: data.firstColumnWidth,
-                    builder: context
-                        .watch<ExpandableTableRow>()
-                        .firstCell
-                        .build,
+                    builder:
+                        context.watch<ExpandableTableRow>().firstCell.build,
                     onTap: () {
                       if (!data.allRows[index].disableDefaultOnTapExpansion) {
                         data.allRows[index].toggleExpand();
@@ -152,7 +152,7 @@ class InternalTableState extends State<InternalTable> {
                 controller: _horizontalBodyController,
                 scrollDirection: Axis.horizontal,
                 physics: const ClampingScrollPhysics(),
-                child: AnimatedContainer(
+                child: AnimatedCollapse(
                   width: data.visibleHeadersWidth,
                   duration: data.duration,
                   curve: data.curve,
@@ -166,7 +166,8 @@ class InternalTableState extends State<InternalTable> {
                       controller: _restColumnsController,
                       physics: const ClampingScrollPhysics(),
                       itemCount: data.allRows.length,
-                      itemBuilder: (context, index) => _buildRowCells(data, data.allRows[index]),
+                      itemBuilder: (context, index) =>
+                          _buildRowCells(data, data.allRows[index]),
                     ),
                   ),
                 ),
@@ -271,17 +272,11 @@ class InternalTableState extends State<InternalTable> {
                     fadeInCurve: data.scrollShadowFadeInCurve,
                     fadeOutCurve: data.scrollShadowFadeOutCurve,
                     duration: data.scrollShadowDuration,
-                    child: Builder(
-                      builder: (context) {
-                        final headers =  _buildHeaderCells(data);
-                        return ListView.builder(
-                          controller: _headController,
-                          physics: const ClampingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: headers.length,
-                          itemBuilder: (context, index) => headers[index],
-                        );
-                      }
+                    child: ListView(
+                      controller: _headController,
+                      physics: const ClampingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      children: _buildHeaderCells(data),
                     ),
                   ),
                 ),

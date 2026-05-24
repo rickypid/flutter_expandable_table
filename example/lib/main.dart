@@ -131,7 +131,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   static const int columnsCount = 6;
-  static const int subColumnsCount = 0;
+  static const int subColumnsCount = 3;
   static const int rowsCount = 100;
   static const int subRowsCount = 100;
   static const int totalColumns = columnsCount + subColumnsCount;

@@ -130,10 +130,17 @@ class _MyHomePageState extends State<_MyHomePage> {
     );
   }
 
-  static const int columnsCount = 6;
-  static const int subColumnsCount = 3;
-  static const int rowsCount = 100;
-  static const int subRowsCount = 100;
+  static const int columnsCount = 20;
+  static const int subColumnsCount = 2;
+  static const int rowsCount = 6;
+  static const int subRowsCount = 3;
+
+  // Large dataset
+  // static const int columnsCount = 6;
+  // static const int subColumnsCount = 3;
+  // static const int rowsCount = 100;
+  // static const int subRowsCount = 100;
+
   static const int totalColumns = columnsCount + subColumnsCount;
 
   List<ExpandableTableRow> _generateRows(int quantity, {int depth = 0}) {

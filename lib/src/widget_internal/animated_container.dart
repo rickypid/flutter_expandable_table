@@ -30,6 +30,11 @@ class AnimatedCollapse extends StatefulWidget {
   /// If `null`, width is unconstrained.
   final double? width;
 
+  /// Creates an [AnimatedCollapse].
+  ///
+  /// The [child], [duration] and [curve] parameters are required.
+  /// Provide [width] and/or [height] to constrain and animate the
+  /// corresponding dimension; omit them to leave that axis unconstrained.
   const AnimatedCollapse({
     super.key,
     required this.child,

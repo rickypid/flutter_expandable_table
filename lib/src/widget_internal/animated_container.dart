@@ -1,10 +1,33 @@
 import 'package:flutter/material.dart';
 
+/// [AnimatedCollapse] animates its [width] and/or [height] like [AnimatedContainer],
+/// but additionally removes the [child] from the widget tree once the collapse
+/// animation completes (i.e. when the animated dimension reaches zero).
+///
+/// This avoids the cost of keeping hidden subtrees alive after they are fully
+/// collapsed. The child is re-inserted before the expand animation begins so
+/// it is always present while visible.
+///
+/// At least one of [width] or [height] must be provided; omitted dimensions
+/// are left unconstrained (the child determines its own size on that axis).
 class AnimatedCollapse extends StatefulWidget {
+  /// The widget below this widget in the tree.
   final Widget child;
+
+  /// Duration of the collapse/expand animation.
   final Duration duration;
+
+  /// Curve applied to the collapse/expand animation.
   final Curve curve;
+
+  /// Animated height. When this reaches `0` the [child] is removed from the
+  /// tree. When it returns to a positive value the [child] is restored.
+  /// If `null`, height is unconstrained.
   final double? height;
+
+  /// Animated width. When this reaches `0` the [child] is removed from the
+  /// tree. When it returns to a positive value the [child] is restored.
+  /// If `null`, width is unconstrained.
   final double? width;
 
   const AnimatedCollapse({

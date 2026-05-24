@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_table/src/widget_internal/animated_container.dart';
 
 // Package imports:
 import 'package:provider/provider.dart';
@@ -41,7 +42,7 @@ class ExpandableTableCellWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
-        child: AnimatedContainer(
+        child: AnimatedCollapse(
           duration: context.watch<ExpandableTableController>().duration,
           curve: context.watch<ExpandableTableController>().curve,
           width: header?.visible == false ? 0 : width,

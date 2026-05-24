@@ -1,5 +1,12 @@
 # Flutter Expandable Table
 
+## [2.2.0] - 2026-05-24
+#### [@riccardocucia](https://github.com/riccardocucia)
+- Improved performance with large datasets by adopting `ListView.builder` for lazy row rendering.
+- Fixed body/header horizontal scroll desync when collapsing columns after scrolling right.
+- Added `AnimatedCollapse` to avoid rendering hidden cell content after collapse animation completes.
+- Updated dependencies.
+
 ## [2.1.0] - 2024-07-03
 #### [@RichiB20](https://github.com/RichiB20)
 - Fixed vertical Scrollbar and added horizontal Scrollbar.

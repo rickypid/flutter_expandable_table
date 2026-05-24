@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_table/src/widget_internal/animated_container.dart';
 
 // Package imports:
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
@@ -98,31 +99,27 @@ class InternalTableState extends State<InternalTable> {
         children: [
           Builder(
             builder: (context) {
-              final Widget child = ListView(
+              final Widget child = ListView.builder(
                 controller: _firstColumnController,
                 physics: const ClampingScrollPhysics(),
-                children: data.allRows
-                    .map(
-                      (e) => ChangeNotifierProvider<ExpandableTableRow>.value(
-                        value: e,
-                        builder: (context, child) => ExpandableTableCellWidget(
-                          row: context.watch<ExpandableTableRow>(),
-                          height: context.watch<ExpandableTableRow>().height ??
-                              data.defaultsRowHeight,
-                          width: data.firstColumnWidth,
-                          builder: context
-                              .watch<ExpandableTableRow>()
-                              .firstCell
-                              .build,
-                          onTap: () {
-                            if (!e.disableDefaultOnTapExpansion) {
-                              e.toggleExpand();
-                            }
-                          },
-                        ),
-                      ),
-                    )
-                    .toList(),
+                itemCount: data.allRows.length,
+                itemBuilder: (context, index) =>
+                    ChangeNotifierProvider<ExpandableTableRow>.value(
+                  value: data.allRows[index],
+                  builder: (context, child) => ExpandableTableCellWidget(
+                    row: context.watch<ExpandableTableRow>(),
+                    height: context.watch<ExpandableTableRow>().height ??
+                        data.defaultsRowHeight,
+                    width: data.firstColumnWidth,
+                    builder:
+                        context.watch<ExpandableTableRow>().firstCell.build,
+                    onTap: () {
+                      if (!data.allRows[index].disableDefaultOnTapExpansion) {
+                        data.allRows[index].toggleExpand();
+                      }
+                    },
+                  ),
+                ),
               );
               return SizedBox(
                 width: data.firstColumnWidth,
@@ -155,7 +152,7 @@ class InternalTableState extends State<InternalTable> {
                 controller: _horizontalBodyController,
                 scrollDirection: Axis.horizontal,
                 physics: const ClampingScrollPhysics(),
-                child: AnimatedContainer(
+                child: AnimatedCollapse(
                   width: data.visibleHeadersWidth,
                   duration: data.duration,
                   curve: data.curve,
@@ -165,14 +162,12 @@ class InternalTableState extends State<InternalTable> {
                     fadeInCurve: data.scrollShadowFadeInCurve,
                     fadeOutCurve: data.scrollShadowFadeOutCurve,
                     duration: data.scrollShadowDuration,
-                    child: ListView(
+                    child: ListView.builder(
                       controller: _restColumnsController,
                       physics: const ClampingScrollPhysics(),
-                      children: data.allRows
-                          .map(
-                            (e) => _buildRowCells(data, e),
-                          )
-                          .toList(),
+                      itemCount: data.allRows.length,
+                      itemBuilder: (context, index) =>
+                          _buildRowCells(data, data.allRows[index]),
                     ),
                   ),
                 ),

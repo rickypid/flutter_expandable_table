@@ -1,6 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_table/src/widget_internal/animated_container.dart';
+import 'package:flutter/scheduler.dart';
 
 // Package imports:
 import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
+import 'package:flutter_expandable_table/src/widget_internal/animated_extents.dart';
 import 'package:flutter_expandable_table/src/widget_internal/cell.dart';
 
 /// [InternalTable] it is the widget that builds the table.
@@ -23,214 +24,369 @@ class InternalTable extends StatefulWidget {
 }
 
 /// [InternalTable] state.
-class InternalTableState extends State<InternalTable> {
-  late LinkedScrollControllerGroup _horizontalLinkedControllers;
-  late ScrollController _headController;
-  late ScrollController _horizontalBodyController;
+class InternalTableState extends State<InternalTable>
+    with TickerProviderStateMixin {
+  // Header and body share a single horizontal scrollable, so they cannot get
+  // out of sync when the content width changes (e.g. collapsing columns while
+  // scrolled to the end).
+  late ScrollController _horizontalController;
   late LinkedScrollControllerGroup _verticalLinkedControllers;
   late ScrollController _firstColumnController;
   late ScrollController _restColumnsController;
+  late AnimatedExtents<ExpandableTableHeader> _columnExtents;
+  late AnimatedExtents<ExpandableTableRow> _rowExtents;
 
   @override
   void initState() {
     super.initState();
-    _horizontalLinkedControllers = LinkedScrollControllerGroup();
-    _headController = _horizontalLinkedControllers.addAndGet();
-    _horizontalBodyController = _horizontalLinkedControllers.addAndGet();
+    _horizontalController = ScrollController();
     _verticalLinkedControllers = LinkedScrollControllerGroup();
     _firstColumnController = _verticalLinkedControllers.addAndGet();
     _restColumnsController = _verticalLinkedControllers.addAndGet();
+    _columnExtents = AnimatedExtents<ExpandableTableHeader>(
+      controller: AnimationController(vsync: this)
+        ..addStatusListener(_handleExtentsStatus),
+      curve: Curves.linear,
+    );
+    _rowExtents = AnimatedExtents<ExpandableTableRow>(
+      controller: AnimationController(vsync: this)
+        ..addStatusListener(_handleExtentsStatus),
+      curve: Curves.linear,
+    );
   }
 
   @override
   void dispose() {
-    _headController.dispose();
-    _horizontalBodyController.dispose();
+    _horizontalController.dispose();
     _restColumnsController.dispose();
     _firstColumnController.dispose();
+    _columnExtents.controller.dispose();
+    _rowExtents.controller.dispose();
     super.dispose();
   }
 
-  List<Widget> _buildHeaderCells(ExpandableTableController data) =>
-      data.allHeaders
-          .map(
-            (e) => ExpandableTableCellWidget(
-              height: data.headerHeight,
-              width: e.width ?? data.defaultsColumnWidth,
-              header: e,
-              onTap: () {
-                if (!e.disableDefaultOnTapExpansion) {
-                  e.toggleExpand();
-                }
-              },
-              builder: e.cell.build,
+  // Once a transition ends, fully collapsed rows/columns are dropped from the
+  // layout. A completion fired synchronously from build (nothing to animate)
+  // needs no rebuild, since build reads the settled extents right after.
+  void _handleExtentsStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed &&
+        mounted &&
+        SchedulerBinding.instance.schedulerPhase !=
+            SchedulerPhase.persistentCallbacks) {
+      setState(() {});
+    }
+  }
+
+  void _syncExtents(ExpandableTableController data) {
+    _columnExtents
+      ..curve = data.curve
+      ..update(
+        {
+          for (final header in data.allHeaders)
+            header:
+                header.visible ? header.width ?? data.defaultsColumnWidth : 0,
+        },
+        duration: data.duration,
+      );
+    _rowExtents
+      ..curve = data.curve
+      ..update(
+        {
+          for (final row in data.allRows)
+            row: row.visible ? row.height ?? data.defaultsRowHeight : 0,
+        },
+        duration: data.duration,
+      );
+  }
+
+  // Lays [child] out at the full row [height] and clips it to the animated one.
+  Widget _animatedRow({
+    required ExpandableTableRow row,
+    required double height,
+    required Widget child,
+  }) =>
+      AnimatedBuilder(
+        key: ObjectKey(row),
+        animation: _rowExtents.controller,
+        builder: (context, child) {
+          final double extent = _rowExtents.of(row);
+          return SizedBox(
+            height: extent,
+            child: ClipRect(
+              clipBehavior: extent < height ? Clip.hardEdge : Clip.none,
+              child: OverflowBox(
+                alignment: Alignment.topCenter,
+                minHeight: height,
+                maxHeight: height,
+                child: child,
+              ),
             ),
-          )
-          .toList();
+          );
+        },
+        child: child,
+      );
+
+  // Lays each cell out at its full column width and clips it to the animated
+  // one. Only the cheap wrappers are rebuilt on every animation frame, the
+  // cells themselves are built once.
+  Widget _animatedCells({
+    required ExpandableTableController data,
+    required List<int> columns,
+    required List<Widget> cells,
+    required double height,
+  }) {
+    final List<ExpandableTableHeader> headers = data.allHeaders;
+    return AnimatedBuilder(
+      animation: _columnExtents.controller,
+      builder: (context, _) => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (int i = 0; i < columns.length; i++)
+            Builder(
+              key: ObjectKey(headers[columns[i]]),
+              builder: (context) {
+                final ExpandableTableHeader header = headers[columns[i]];
+                final double width = header.width ?? data.defaultsColumnWidth;
+                final double extent = _columnExtents.of(header);
+                return SizedBox(
+                  width: extent,
+                  height: height,
+                  child: ClipRect(
+                    clipBehavior: extent < width ? Clip.hardEdge : Clip.none,
+                    child: OverflowBox(
+                      alignment: AlignmentDirectional.centerStart,
+                      minWidth: width,
+                      maxWidth: width,
+                      child: cells[i],
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderCells(ExpandableTableController data, List<int> columns) {
+    final List<ExpandableTableHeader> headers = data.allHeaders;
+    return _animatedCells(
+      data: data,
+      columns: columns,
+      height: data.headerHeight,
+      cells: [
+        for (final int index in columns)
+          ExpandableTableCellWidget(
+            height: data.headerHeight,
+            width: headers[index].width ?? data.defaultsColumnWidth,
+            header: headers[index],
+            onTap: () {
+              if (!headers[index].disableDefaultOnTapExpansion) {
+                headers[index].toggleExpand();
+              }
+            },
+            builder: headers[index].cell.build,
+          ),
+      ],
+    );
+  }
 
   Widget _buildRowCells(
-      ExpandableTableController data, ExpandableTableRow row) {
-    if (row.cells != null) {
-      return Row(
-        children: row.cells!
-            .map(
-              (cell) => ExpandableTableCellWidget(
-                header: data.allHeaders[row.cells!.indexOf(cell)],
-                row: row,
-                height: row.height ?? data.defaultsRowHeight,
-                width: data.allHeaders[row.cells!.indexOf(cell)].width ??
-                    data.defaultsColumnWidth,
-                builder: cell.build,
-              ),
-            )
-            .toList(),
-      );
-    } else {
+    ExpandableTableController data,
+    ExpandableTableRow row,
+    double height,
+    List<int> columns,
+  ) {
+    if (row.cells == null) {
       return ExpandableTableCellWidget(
-        height: row.height ?? data.defaultsRowHeight,
+        height: height,
         width: double.infinity,
         row: row,
         builder: (context, details) => row.legend!,
       );
     }
+    final List<ExpandableTableHeader> headers = data.allHeaders;
+    return _animatedCells(
+      data: data,
+      columns: columns,
+      height: height,
+      cells: [
+        for (final int index in columns)
+          ExpandableTableCellWidget(
+            header: headers[index],
+            row: row,
+            height: height,
+            width: headers[index].width ?? data.defaultsColumnWidth,
+            builder: row.cells![index].build,
+          ),
+      ],
+    );
   }
 
-  Widget _buildBody(ExpandableTableController data) => Row(
-        children: [
-          Builder(
-            builder: (context) {
-              final Widget child = ListView.builder(
-                controller: _firstColumnController,
-                physics: const ClampingScrollPhysics(),
-                itemCount: data.allRows.length,
-                itemBuilder: (context, index) =>
-                    ChangeNotifierProvider<ExpandableTableRow>.value(
-                  value: data.allRows[index],
-                  builder: (context, child) => ExpandableTableCellWidget(
-                    row: context.watch<ExpandableTableRow>(),
-                    height: context.watch<ExpandableTableRow>().height ??
-                        data.defaultsRowHeight,
-                    width: data.firstColumnWidth,
-                    builder:
-                        context.watch<ExpandableTableRow>().firstCell.build,
-                    onTap: () {
-                      if (!data.allRows[index].disableDefaultOnTapExpansion) {
-                        data.allRows[index].toggleExpand();
-                      }
-                    },
-                  ),
-                ),
-              );
-              return SizedBox(
-                width: data.firstColumnWidth,
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context)
-                      .copyWith(scrollbars: false),
-                  child: ScrollShadow(
-                    size: data.scrollShadowSize,
-                    color: data.scrollShadowColor,
-                    fadeInCurve: data.scrollShadowFadeInCurve,
-                    fadeOutCurve: data.scrollShadowFadeOutCurve,
-                    duration: data.scrollShadowDuration,
-                    child: data.visibleScrollbar
-                        ? Scrollbar(
-                            controller: _firstColumnController,
-                            thumbVisibility: data.thumbVisibilityScrollbar,
-                            trackVisibility: data.trackVisibilityScrollbar,
-                            scrollbarOrientation: ScrollbarOrientation.left,
-                            child: child,
-                          )
-                        : child,
-                  ),
-                ),
-              );
-            },
-          ),
-          Builder(
-            builder: (context) {
-              final Widget child = SingleChildScrollView(
-                controller: _horizontalBodyController,
-                scrollDirection: Axis.horizontal,
-                physics: const ClampingScrollPhysics(),
-                child: AnimatedCollapse(
-                  width: data.visibleHeadersWidth,
-                  duration: data.duration,
-                  curve: data.curve,
-                  child: ScrollShadow(
-                    size: data.scrollShadowSize,
-                    color: data.scrollShadowColor,
-                    fadeInCurve: data.scrollShadowFadeInCurve,
-                    fadeOutCurve: data.scrollShadowFadeOutCurve,
-                    duration: data.scrollShadowDuration,
-                    child: ListView.builder(
-                      controller: _restColumnsController,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: data.allRows.length,
-                      itemBuilder: (context, index) =>
-                          _buildRowCells(data, data.allRows[index]),
-                    ),
-                  ),
-                ),
-              );
-
-              return Expanded(
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context)
-                      .copyWith(scrollbars: false),
-                  child: ScrollShadow(
-                    size: data.scrollShadowSize,
-                    color: data.scrollShadowColor,
-                    fadeInCurve: data.scrollShadowFadeInCurve,
-                    fadeOutCurve: data.scrollShadowFadeOutCurve,
-                    duration: data.scrollShadowDuration,
-                    child: data.visibleScrollbar
-                        ? Scrollbar(
-                            controller: _horizontalBodyController,
-                            thumbVisibility: data.thumbVisibilityScrollbar,
-                            trackVisibility: data.trackVisibilityScrollbar,
-                            child: child,
-                          )
-                        : child,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+  ScrollShadow _scrollShadow(ExpandableTableController data, Widget child) =>
+      ScrollShadow(
+        size: data.scrollShadowSize,
+        color: data.scrollShadowColor,
+        fadeInCurve: data.scrollShadowFadeInCurve,
+        fadeOutCurve: data.scrollShadowFadeOutCurve,
+        duration: data.scrollShadowDuration,
+        child: child,
       );
+
+  Widget _buildFirstColumn(
+    BuildContext context,
+    ExpandableTableController data,
+    List<ExpandableTableRow> rows,
+    Map<ExpandableTableRow, int> rowIndexes,
+  ) {
+    final Widget child = ListView.builder(
+      controller: _firstColumnController,
+      physics: const ClampingScrollPhysics(),
+      itemCount: rows.length,
+      // Keeps each row bound to its own element when rows are inserted or
+      // removed above it by an expansion.
+      findChildIndexCallback: (key) =>
+          key is ObjectKey ? rowIndexes[key.value] : null,
+      itemBuilder: (context, index) {
+        final ExpandableTableRow row = rows[index];
+        final double height = row.height ?? data.defaultsRowHeight;
+        return _animatedRow(
+          row: row,
+          height: height,
+          child: ChangeNotifierProvider<ExpandableTableRow>.value(
+            value: row,
+            child: ExpandableTableCellWidget(
+              row: row,
+              height: height,
+              width: data.firstColumnWidth,
+              builder: row.firstCell.build,
+              onTap: () {
+                if (!row.disableDefaultOnTapExpansion) {
+                  row.toggleExpand();
+                }
+              },
+            ),
+          ),
+        );
+      },
+    );
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: _scrollShadow(
+        data,
+        data.visibleScrollbar
+            ? Scrollbar(
+                controller: _firstColumnController,
+                thumbVisibility: data.thumbVisibilityScrollbar,
+                trackVisibility: data.trackVisibilityScrollbar,
+                scrollbarOrientation: ScrollbarOrientation.left,
+                child: child,
+              )
+            : child,
+      ),
+    );
+  }
+
+  Widget _buildColumns(
+    BuildContext context,
+    ExpandableTableController data,
+    List<int> columns,
+    List<ExpandableTableRow> rows,
+    Map<ExpandableTableRow, int> rowIndexes,
+  ) {
+    final List<ExpandableTableHeader> headers = data.allHeaders;
+    final Widget body = _scrollShadow(
+      data,
+      ListView.builder(
+        controller: _restColumnsController,
+        physics: const ClampingScrollPhysics(),
+        itemCount: rows.length,
+        findChildIndexCallback: (key) =>
+            key is ObjectKey ? rowIndexes[key.value] : null,
+        itemBuilder: (context, index) {
+          final ExpandableTableRow row = rows[index];
+          final double height = row.height ?? data.defaultsRowHeight;
+          return _animatedRow(
+            row: row,
+            height: height,
+            child: _buildRowCells(data, row, height, columns),
+          );
+        },
+      ),
+    );
+    final Widget child = SingleChildScrollView(
+      controller: _horizontalController,
+      scrollDirection: Axis.horizontal,
+      physics: const ClampingScrollPhysics(),
+      child: AnimatedBuilder(
+        animation: _columnExtents.controller,
+        builder: (context, child) => SizedBox(
+          width: columns.fold<double>(
+              0, (sum, index) => sum + _columnExtents.of(headers[index])),
+          child: child,
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: data.headerHeight,
+              child: _buildHeaderCells(data, columns),
+            ),
+            Expanded(child: body),
+          ],
+        ),
+      ),
+    );
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: _scrollShadow(
+        data,
+        data.visibleScrollbar
+            ? Scrollbar(
+                controller: _horizontalController,
+                thumbVisibility: data.thumbVisibilityScrollbar,
+                trackVisibility: data.trackVisibilityScrollbar,
+                child: child,
+              )
+            : child,
+      ),
+    );
+  }
 
   double _computeTableWidth({required ExpandableTableController data}) =>
       data.firstColumnWidth +
-      (data.headers
-          .map((e) =>
+      data.headers.fold<double>(
+          0,
+          (sum, e) =>
+              sum +
               (e.width ?? data.defaultsColumnWidth) +
               _computeChildrenWidth(
                   expandableTableHeader: e,
-                  defaultsColumnWidth: data.defaultsColumnWidth))
-          .reduce((value, element) => value + element));
+                  defaultsColumnWidth: data.defaultsColumnWidth));
 
   double _computeTableHeight({required ExpandableTableController data}) =>
       data.headerHeight +
-      (data.rows
-          .map((e) =>
+      data.rows.fold<double>(
+          0,
+          (sum, e) =>
+              sum +
               (e.height ?? data.defaultsRowHeight) +
               _computeChildrenHeight(
                   expandableTableRow: e,
-                  defaultsRowHeight: data.defaultsRowHeight))
-          .reduce((value, element) => value + element));
+                  defaultsRowHeight: data.defaultsRowHeight));
 
   double _computeChildrenHeight({
     required ExpandableTableRow expandableTableRow,
     required double defaultsRowHeight,
   }) =>
       expandableTableRow.childrenExpanded
-          ? expandableTableRow.children!
-              .map((e) =>
+          ? expandableTableRow.children!.fold<double>(
+              0,
+              (sum, e) =>
+                  sum +
                   (e.height ?? defaultsRowHeight) +
                   _computeChildrenHeight(
                       expandableTableRow: e,
                       defaultsRowHeight: defaultsRowHeight))
-              .reduce((value, element) => value + element)
           : 0;
 
   double _computeChildrenWidth({
@@ -238,27 +394,45 @@ class InternalTableState extends State<InternalTable> {
     required double defaultsColumnWidth,
   }) =>
       expandableTableHeader.childrenExpanded
-          ? expandableTableHeader.children!
-              .map((e) =>
+          ? expandableTableHeader.children!.fold<double>(
+              0,
+              (sum, e) =>
+                  sum +
                   (e.width ?? defaultsColumnWidth) +
                   _computeChildrenWidth(
                       expandableTableHeader: e,
                       defaultsColumnWidth: defaultsColumnWidth))
-              .reduce((value, element) => value + element)
           : 0;
 
   @override
   Widget build(BuildContext context) {
     final ExpandableTableController data =
         context.watch<ExpandableTableController>();
+    _syncExtents(data);
+    final List<ExpandableTableHeader> headers = data.allHeaders;
+    // Only rows/columns that take up space (or are animating out) are laid
+    // out: collapsed ones would otherwise be zero-sized items that the lazy
+    // list has to build all at once.
+    final List<int> columns = [
+      for (int i = 0; i < headers.length; i++)
+        if (_columnExtents.isDisplayed(headers[i])) i,
+    ];
+    final List<ExpandableTableRow> rows =
+        data.allRows.where(_rowExtents.isDisplayed).toList(growable: false);
+    final Map<ExpandableTableRow, int> rowIndexes =
+        Map<ExpandableTableRow, int>.identity();
+    for (int i = 0; i < rows.length; i++) {
+      rowIndexes[rows[i]] = i;
+    }
     return SizedBox(
       width: data.expanded ? null : _computeTableWidth(data: data),
       height: data.expanded ? null : _computeTableHeight(data: data),
-      child: Column(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
-            height: data.headerHeight,
-            child: Row(
+            width: data.firstColumnWidth,
+            child: Column(
               children: [
                 ExpandableTableCellWidget(
                   height: data.headerHeight,
@@ -266,25 +440,13 @@ class InternalTableState extends State<InternalTable> {
                   builder: data.firstHeaderCell.build,
                 ),
                 Expanded(
-                  child: ScrollShadow(
-                    size: data.scrollShadowSize,
-                    color: data.scrollShadowColor,
-                    fadeInCurve: data.scrollShadowFadeInCurve,
-                    fadeOutCurve: data.scrollShadowFadeOutCurve,
-                    duration: data.scrollShadowDuration,
-                    child: ListView(
-                      controller: _headController,
-                      physics: const ClampingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      children: _buildHeaderCells(data),
-                    ),
-                  ),
+                  child: _buildFirstColumn(context, data, rows, rowIndexes),
                 ),
               ],
             ),
           ),
           Expanded(
-            child: _buildBody(data),
+            child: _buildColumns(context, data, columns, rows, rowIndexes),
           ),
         ],
       ),

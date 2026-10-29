@@ -30,6 +30,7 @@ class ExpandableTableController extends ChangeNotifier {
     _removeHeadersListener();
     _headers = value;
     _addHeadersListener();
+    _invalidateCache();
     notifyListeners();
   }
 
@@ -176,6 +177,7 @@ class ExpandableTableController extends ChangeNotifier {
     _removeRowsListener();
     _rows = value;
     _addRowsListener();
+    _invalidateCache();
     notifyListeners();
   }
 
@@ -248,14 +250,32 @@ class ExpandableTableController extends ChangeNotifier {
     super.dispose();
   }
 
-  void _listener() => notifyListeners();
+  // Any change in the header/row trees (expansion, nested children) bubbles
+  // up here, so this is the single place where the flattened lists go stale.
+  void _listener() {
+    _invalidateCache();
+    notifyListeners();
+  }
+
+  List<ExpandableTableHeader>? _allHeadersCache;
+  List<ExpandableTableHeader>? _visibleHeadersCache;
+  List<ExpandableTableRow>? _allRowsCache;
+  List<ExpandableTableRow>? _visibleRowsCache;
+
+  void _invalidateCache() {
+    _allHeadersCache = null;
+    _visibleHeadersCache = null;
+    _allRowsCache = null;
+    _visibleRowsCache = null;
+  }
 
   /// [allHeaders] returns all table headers, visible and not, including nested ones.
-  List<ExpandableTableHeader> get allHeaders => _getAllHeaders(headers);
+  List<ExpandableTableHeader> get allHeaders =>
+      _allHeadersCache ??= List.unmodifiable(_getAllHeaders(headers));
 
   /// [visibleHeaders] returns all visible table headers, including nested ones.
-  List<ExpandableTableHeader> get visibleHeaders =>
-      allHeaders.where((element) => element.visible).toList();
+  List<ExpandableTableHeader> get visibleHeaders => _visibleHeadersCache ??=
+      List.unmodifiable(allHeaders.where((element) => element.visible));
 
   /// [visibleHeadersWidth] returns the overall width of all visible table headers, including nested ones
   double get visibleHeadersWidth => visibleHeaders
@@ -275,11 +295,12 @@ class ExpandableTableController extends ChangeNotifier {
   }
 
   /// [allRows] returns all table rows, visible and not, including nested ones.
-  List<ExpandableTableRow> get allRows => _getAllRows(rows);
+  List<ExpandableTableRow> get allRows =>
+      _allRowsCache ??= List.unmodifiable(_getAllRows(rows));
 
   /// [visibleRows] returns all visible table rows, including nested ones.
-  List<ExpandableTableRow> get visibleRows =>
-      allRows.where((element) => element.visible).toList();
+  List<ExpandableTableRow> get visibleRows => _visibleRowsCache ??=
+      List.unmodifiable(allRows.where((element) => element.visible));
 
   /// [visibleHeadersWidth] returns the overall width of all visible table rows, including nested ones
   double get visibleRowsHeight => visibleRows

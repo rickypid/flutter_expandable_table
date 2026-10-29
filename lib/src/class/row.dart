@@ -132,7 +132,7 @@ class ExpandableTableRow extends ChangeNotifier {
     int count = 1;
     if (children != null) {
       for (var e in children!) {
-        count += e.visibleRowsCount;
+        count += e.rowsCount;
       }
     }
     return count;

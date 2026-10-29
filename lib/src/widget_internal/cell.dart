@@ -1,14 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_table/src/widget_internal/animated_container.dart';
-
-// Package imports:
-import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:flutter_expandable_table/flutter_expandable_table.dart';
 
 /// [ExpandableTableCellWidget] it is the widget that builds the table cell.
+/// The cell is always laid out at its full size: expand/collapse animations
+/// are applied by the table, which clips the cell to the animated extent.
 class ExpandableTableCellWidget extends StatelessWidget {
   /// [builder] method for building cell content.
   final Function(BuildContext context, CellDetails details) builder;
@@ -42,11 +40,9 @@ class ExpandableTableCellWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
-        child: AnimatedCollapse(
-          duration: context.watch<ExpandableTableController>().duration,
-          curve: context.watch<ExpandableTableController>().curve,
-          width: header?.visible == false ? 0 : width,
-          height: row?.visible == false ? 0 : height,
+        child: SizedBox(
+          width: width,
+          height: height,
           child: builder(
             context,
             CellDetails(

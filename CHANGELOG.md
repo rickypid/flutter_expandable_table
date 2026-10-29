@@ -1,5 +1,16 @@
 # Flutter Expandable Table
 
+## [2.3.0] - 2026-10-29
+#### [@riccardocucia](https://github.com/riccardocucia)
+- Improved performance with many rows: collapsed rows and columns are no longer laid out, flattened rows/headers are cached in the controller and cells no longer rebuild on every controller change.
+- Expand/collapse animations are now driven by two shared animations instead of one per cell; cell content is clipped instead of squeezed while animating.
+- Fixed header/body horizontal misalignment after collapsing columns while scrolled to the end (the 2.2.0 fix was incomplete): header and body now share a single horizontal scroll view.
+- Fixed `ExpandableTableRow.rowsCount` counting only visible nested rows.
+- Fixed crash with empty `headers` or `rows` when `expanded` is `false`.
+- `allRows`, `allHeaders`, `visibleRows` and `visibleHeaders` now return unmodifiable lists.
+- Removed internal `AnimatedCollapse` widget.
+- Aligned GitHub Actions (CI, pub.dev publishing on tag, Dependabot) and added issue/PR templates.
+
 ## [2.2.0] - 2026-05-24
 #### [@riccardocucia](https://github.com/riccardocucia)
 - Improved performance with large datasets by adopting `ListView.builder` for lazy row rendering.

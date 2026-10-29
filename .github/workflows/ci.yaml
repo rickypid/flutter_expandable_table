@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze and tests (Flutter ${{ matrix.flutter }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Latest stable only: the minimum declared in pubspec.yaml
+        # (sdk >=2.18.0, flutter >=1.17.0) cannot resolve the current
+        # dependencies. Add the minimum here once pubspec.yaml is aligned.
+        flutter: ['stable']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter != 'stable' && matrix.flutter || '' }}
+          channel: stable
+          cache: true
+
+      # The example app may need a newer SDK than the package minimum: on the
+      # minimum version only the package itself is resolved and analyzed.
+      - name: Install dependencies
+        run: flutter pub get ${{ matrix.flutter != 'stable' && '--no-example' || '' }}
+
+      # Formatting output can differ between Dart versions: checked on the
+      # latest stable only.
+      - name: Check formatting
+        if: matrix.flutter == 'stable'
+        run: dart format . --set-exit-if-changed
+
+      - name: Analyze
+        run: flutter analyze --no-pub ${{ matrix.flutter != 'stable' && 'lib test' || '' }}
+
+      - name: Tests
+        run: flutter test --no-pub --coverage
+
+      # The 10 points of the example/screenshots check are only granted on
+      # pub.dev: any other lost point fails the job.
+      - name: pub.dev score (pana)
+        if: matrix.flutter == 'stable'
+        run: |
+          dart pub global activate pana
+          pana --no-warning --exit-code-threshold 10 .
